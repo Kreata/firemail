@@ -1,17 +1,4 @@
 
-/*
-We never expect anything else than ASCII from the SMTP server, 
-exept when SMTPUTF8 (RFC6531) parameter is used in which case 
-the server might also respond with UTF-8. As we never expect
-anything else than ASCII or UTF-8 and TextEncoder can only encode
-unicode, there is no need to use arraybuffers when communicating
-with a SMTP server. Even if we want to use the 8BITMIME, we have
-to use UTF-8 - actually, we can use UTF-16le/be as well but lets
-just ignore this for now :)
-So, assuming only UTF-8 both ways should always be fine and this
-means that strings can be used instead of arraybuffers.
-*/
-
 /**
  * Generates a parser object for data coming from a SMTP server
  *
@@ -44,7 +31,6 @@ SMTPResponseParser.prototype.onerror = function(error){};
 SMTPResponseParser.prototype.ondata = function(data){};
 SMTPResponseParser.prototype.onend = function(){};
 
-
 // Public API
 
 /**
@@ -52,7 +38,7 @@ SMTPResponseParser.prototype.onend = function(){};
  *
  * @param {String} chunk Chunk of data received from the server
  */
-SMTPResponseParser.prototype.write = function(chunk){
+SMTPResponseParser.prototype.send = function(chunk){
     if(this.destroyed){
         return this.onerror(new Error("This parser has already been closed, 'write' is prohibited"));
     }
@@ -77,7 +63,7 @@ SMTPResponseParser.prototype.end = function(chunk){
     }
 
     if(chunk){
-        this.write(chunk);
+        this.send(chunk);
     }
 
     if(this._remainder){
@@ -97,7 +83,7 @@ SMTPResponseParser.prototype.end = function(chunk){
  * @param {String} line Complete line of data from the server
  */
 SMTPResponseParser.prototype._processLine = function(line){
-    var match;
+    var match, response;
     
     // possible input strings for the regex:
     // 250-MESSAGE
@@ -124,18 +110,22 @@ SMTPResponseParser.prototype._processLine = function(line){
             }
             return;
         }else{
-            this.ondata({
+            response = {
                 statusCode: Number(match[1]) || 0, 
                 enhancedStatus: match[3] || null, 
                 data: this._block.data,
                 line: this._block.lines.join("\n")
-            });
+            };
+            response.success = response.statusCode >= 200 && response.statusCode < 300;
+
+            this.ondata(response);
             this._block = {data: [], lines: [], statusCode: null};
             this._block.statusCode = null;
         }
     }else{
         this.onerror(new Error("Invalid SMTP response \"" + line + "\""));
         this.ondata({
+            success: false,
             statusCode: this._block.statusCode || null, 
             enhancedStatus: null, 
             data: [line],

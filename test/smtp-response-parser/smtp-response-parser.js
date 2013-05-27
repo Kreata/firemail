@@ -13,9 +13,10 @@ this.SMTPResponseParserTests= {
     'Events: ondata': function (test) {
         test.expect(1);
 
-        var line = "123 1.2.3 test",
+        var line = "250 1.2.3 test",
             response = {
-                statusCode: 123, 
+                success: true,
+                statusCode: 250, 
                 enhancedStatus: "1.2.3", 
                 data: ["test"], 
                 line: line
@@ -45,9 +46,10 @@ this.SMTPResponseParserTests= {
     'Events: ondata, onend': function (test) {
         test.expect(1);
 
-        var line = "123 1.2.3 test",
+        var line = "250 1.2.3 test",
             response = {
-                statusCode: 123, 
+                success: true,
+                statusCode: 250, 
                 enhancedStatus: "1.2.3", 
                 data: ["test"], 
                 line: line
@@ -76,15 +78,17 @@ this.SMTPResponseParserTests= {
     'Events: ondata, onend, write one byte at a time': function (test) {
         test.expect(2);
 
-        var lines = ["123 1.2.3 test", "456 pest"],
+        var lines = ["250 1.2.3 test", "252 pest"],
             i = 0,
             responses = [{
-                statusCode: 123, 
+                success: true,
+                statusCode: 250, 
                 enhancedStatus: "1.2.3", 
                 data: ["test"], 
                 line: lines[0]
             },{
-                statusCode: 456, 
+                success:true,
+                statusCode: 252, 
                 enhancedStatus: null, 
                 data: ["pest"], 
                 line: lines[1]
@@ -107,9 +111,10 @@ this.SMTPResponseParserTests= {
     'Multi line response': function (test) {
         test.expect(1);
 
-        var lines = ["123-test1", "123-test2 test3", "123 test4"],
+        var lines = ["250-test1", "250-test2 test3", "250 test4"],
             response = {
-                statusCode: 123, 
+                success: true,
+                statusCode: 250, 
                 enhancedStatus: null, 
                 data: ["test1", "test2 test3", "test4"], 
                 line: lines.join("\n")
@@ -140,26 +145,29 @@ this.SMTPResponseParserTests= {
         test.expect(3);
 
         var lines = [
-                "321 1.2.3 test",
-                "123-test1",
-                "123-test2 test3",
-                "123 test4",
-                "567 test6"],
+                "256 1.2.3 test",
+                "250-test1",
+                "250-test2 test3",
+                "250 test4",
+                "254 test6"],
             responses = [
                 {
-                    statusCode: 321, 
+                    success: true,
+                    statusCode: 256, 
                     enhancedStatus: "1.2.3", 
                     data: ["test"], 
                     line: lines[0]
                 },
                 {
-                    statusCode: 123, 
+                    success: true,
+                    statusCode: 250, 
                     enhancedStatus: null, 
                     data: ["test1", "test2 test3", "test4"], 
                     line: lines.slice(1, 4).join("\n")
                 },
                 {
-                    statusCode: 567, 
+                    success: true,
+                    statusCode: 254, 
                     enhancedStatus: null, 
                     data: ["test6"], 
                     line: lines[4]
@@ -189,6 +197,7 @@ this.SMTPResponseParserTests= {
 
         var line = "nostatus",
             response = {
+                success: false,
                 statusCode: null, 
                 enhancedStatus: null, 
                 data: ["nostatus"], 
@@ -226,9 +235,9 @@ this.SMTPResponseParserTests= {
             test.done();
         }
 
-        parser.write("123 test1\r\n");
+        parser.write("250 test1\r\n");
         parser.end();
-        parser.write("123 test1\r\n");
+        parser.write("250 test1\r\n");
     },
 
     'Events: onerror, closed stream, no end': function (test) {
@@ -241,7 +250,7 @@ this.SMTPResponseParserTests= {
             test.done();
         }
 
-        parser.write("123 test1\r\n");
+        parser.write("250 test1\r\n");
         parser.end();
         parser.end();
     },
@@ -250,26 +259,29 @@ this.SMTPResponseParserTests= {
         test.expect(3);
 
         var lines = [
-                "321 1.2.3 test",
-                "123-test1",
-                "123-test2 test3",
-                "123 test4",
-                "567 test6"],
+                "256 1.2.3 test",
+                "250-test1",
+                "250-test2 test3",
+                "250 test4",
+                "254 test6"],
             responses = [
                 {
-                    statusCode: 321, 
+                    success: true,
+                    statusCode: 256, 
                     enhancedStatus: "1.2.3", 
                     data: ["test"], 
                     line: lines[0]
                 },
                 {
-                    statusCode: 123, 
+                    success: true,
+                    statusCode: 250, 
                     enhancedStatus: null, 
                     data: ["test1", "test2 test3", "test4"], 
                     line: lines.slice(1, 4).join("\n")
                 },
                 {
-                    statusCode: 567, 
+                    success: true,
+                    statusCode: 254, 
                     enhancedStatus: null, 
                     data: ["test6"], 
                     line: lines[4]
@@ -292,6 +304,39 @@ this.SMTPResponseParserTests= {
 
         Array.prototype.slice.call(lines.join("\n")).forEach(parser.write.bind(parser));
         parser.end();
+    },
+
+    'Response success false': function (test) {
+        test.expect(1);
+
+        var line = "150 1.2.3 test",
+            response = {
+                success: false,
+                statusCode: 150, 
+                enhancedStatus: "1.2.3", 
+                data: ["test"], 
+                line: line
+            }, i=0;
+
+        var parser = new SMTPResponseParser();
+        
+        parser.ondata = function(data){
+            if(i++){
+                test.ok(false, "Should not run more than once");
+            }
+            test.deepEqual(data, response);
+            test.done();
+        }
+
+        parser.onend = function(){
+            test.ok(false, "Not expected");
+        }
+
+        parser.onerror = function(err){
+            test.ifError(err);
+        }
+
+        parser.write(line + "\r\n");
     }
 
 };
