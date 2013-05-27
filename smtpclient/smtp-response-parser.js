@@ -27,12 +27,7 @@ var SMTPResponseParser = function(){
     /**
      * If the response is a list, contains previous not yet emitted lines
      */
-    this._block = [];
-
-    /**
-     * If the response is a list, save the status code of the last line
-     */
-    this._blockStatus = null;
+    this._block = {data: [], lines: [], statusCode: null};
 
     /**
      * If set to true, do not accept any more input
@@ -108,50 +103,44 @@ SMTPResponseParser.prototype._processLine = function(line){
     // 250-MESSAGE
     // 250 MESSAGE
     // 250 1.2.3 MESSAGE
+
+    if(!line.trim()){
+        // nothing to check, empty line
+        return;
+    }
+
+    this._block.lines.push(line);
+
     if((match = line.match(/^(\d{3})([\- ])(?:(\d+\.\d+\.\d+)(?: ))?(.*)/))){
         
-        this._block.push(match[4]);
+        this._block.data.push(match[4]);
         
         if(match[2] == "-"){
-            if(this._blockStatus && this._blockStatus != match[1]){
-                this.onerror("Invalid status code " + match[1] + " for multi line response (" + this._blockStatus + " expected)");
-            }else if(!this._blockStatus){
-                this._blockStatus = match[1];
+            if(this._block.statusCode && this._block.statusCode != Number(match[1])){
+                this.onerror("Invalid status code " + match[1] + 
+                    " for multi line response (" + this._block.statusCode + " expected)");
+            }else if(!this._block.statusCode){
+                this._block.statusCode = Number(match[1]);
             }
             return;
         }else{
             this.ondata({
                 statusCode: Number(match[1]) || 0, 
                 enhancedStatus: match[3] || null, 
-                data: this._block,
-                line: line
+                data: this._block.data,
+                line: this._block.lines.join("\n")
             });
-            this._block = [];
-            this._blockStatus = null;
+            this._block = {data: [], lines: [], statusCode: null};
+            this._block.statusCode = null;
         }
     }else{
         this.onerror(new Error("Invalid SMTP response \"" + line + "\""));
         this.ondata({
-            statusCode: this._blockStatus || 0, 
+            statusCode: this._block.statusCode || null, 
             enhancedStatus: null, 
-            data: line,
-            line: line
+            data: [line],
+            line: this._block.lines.join("\n")
         });
-        this._block = [];
-        this._blockStatus = null;
+        this._block = {data: [], lines: [], statusCode: null};
     }
 }
-
-/*
-
-var test = new SMTPResponseParser();
-test.ondata = console.log.bind(console, "data");
-test.onerror = console.log.bind(console, "error");
-test.onend = console.log.bind(console, "end");
-
-test.write("220 smtp.example.com ESMTP Postfix\n250-smtp2.example.com Hello bob.example.org [192.0.2.201]\n250-SIZE 14680064\n250-PIPELINING\n250 HELP\n250 Ok\n354 End data with <CR><LF>.<CR><LF>\n250 Ok: queued as 12345\n221 Bye\r\n");
-
-var data = "220 mx.google.com ESMTP v46si5233591een.227 - gsmtp\n250-mx.google.com at your service, [198.211.126.226]\n250-SIZE 35882577\n251-8BITMIME\n250-STARTTLS\n250 ENHANCEDSTATUSCODES\n555 5.5.2 Syntax error. v46si5233591een.227 - gsmtp";
-for(var i=0, len=data.length; i<len; i++) test.write(data.charAt(i));
-test.end();
-*/
