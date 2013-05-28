@@ -31,7 +31,7 @@
  * @param {String} [options.name] Client hostname for introducing itself to the server
  * @param {Object} [options.auth] Authentication options. Depends on the preferred authentication method. Usually {user, pass}
  * @param {String} [options.authMethod] Force specific authentication method
- * @param {String} [options.disableEscaping] If set to true, do not escape dots on the beginning of the lines
+ * @param {Boolean} [options.disableEscaping] If set to true, do not escape dots on the beginning of the lines
  * @param {Number} [options.logLength=6] How many messages between the client and the server to log. Set to false to disable logging
  */
 function SMTPClient(host, port, options){
