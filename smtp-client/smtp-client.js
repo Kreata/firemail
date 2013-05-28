@@ -177,7 +177,7 @@ SMTPClient.prototype.onidle = function(){};
  *
  * @param {Array} failedRecipients List of addresses that were not accepted as recipients
  */
-SMTPClient.prototype.onwaiting = function(failedRecipients){};
+SMTPClient.prototype.onready = function(failedRecipients){};
 
 /**
  * The mail has been sent. See `log.slice(-1)` for the exact response message.
@@ -185,7 +185,7 @@ SMTPClient.prototype.onwaiting = function(failedRecipients){};
  *
  * @param {Boolean} success Indicates if the message was queued by the server or not
  */
-SMTPClient.prototype.onsend = function(success){};
+SMTPClient.prototype.ondone = function(success){};
 
 // PUBLIC METHODS
 
@@ -195,7 +195,6 @@ SMTPClient.prototype.onsend = function(success){};
  * Initiate a connection to the server
  */
 SMTPClient.prototype.connect = function(){
-    console.log("\nconnecting to "+this.host + ":" + this.port);
     // only mozTCPSocket exists currently but you'll never know when it's going to change
     var socket = navigator.TCPSocket || navigator.mozTCPSocket;
 
@@ -264,10 +263,8 @@ SMTPClient.prototype.reset = function(auth){
  */
 SMTPClient.prototype.close = function(){
     if(this.socket && this.socket.readyState === "open"){
-        console.log("\nClosing socket");
         this.socket.close();
     }else{
-        console.log("\nClosing. Call destroy");
         this._destroy();
     }
 };
@@ -289,24 +286,19 @@ SMTPClient.prototype.useEnvelope = function(envelope){
     this._envelope.rcptQueue = [].concat(this._envelope.to);
     this._envelope.rcptFailed = [];
 
-    console.log("\nFROM:\n" + this._envelope.from)
-    console.log("\nTO:\n" + JSON.stringify(this._envelope.to))
-
     this._currentAction = this._actionMAIL;
     this._sendCommand("MAIL FROM:<"+(this._envelope.from)+">");
 };
 
 
 /**
- * Send ASCII data to the server. Works only in data mode (after `onwaiting` event), ignored
+ * Send ASCII data to the server. Works only in data mode (after `onready` event), ignored
  * otherwise
  *
  * @param {String} chunk ASCII string (quoted-printable, base64 etc.) to be sent to the server
  * @return {Boolean} If true, it is safe to send more data, if false, you *should* wait for the ondrain event before sending more
  */
 SMTPClient.prototype.send = function(chunk){
-    console.log(chunk)
-    console.log(this._dataMode?1:0)
     // works only in data mode
     if(!this._dataMode){
         // this line should never be reached but if it does,
@@ -332,17 +324,15 @@ SMTPClient.prototype.send = function(chunk){
 
     this._log("CLIENT", chunk, true);
 
-    console.log("\nC: " + chunk.replace(/\r/g, "<CR>").replace(/\n/g, "<LF>\n"))
-
     // pass the chunk to the socket
     return (this.waitDrain = this.socket.send(chunk));
 };
 
 /**
  * Indicates that a data stream for the socket is ended. Works only in data 
- * mode (after `onwaiting` event), ignored otherwise. Use it when you are done
+ * mode (after `onready` event), ignored otherwise. Use it when you are done
  * with sending the mail. This method does not close the socket. Once the mail
- * has been queued by the server, `onsend` and `onidle` are emitted.
+ * has been queued by the server, `ondone` and `onidle` are emitted.
  *
  * @param {Buffer} [chunk] Chunk of data to be sent to the server
  */
@@ -389,8 +379,6 @@ SMTPClient.prototype.end = function(chunk){
  * @param {Event} evt Event object. Not used
  */
 SMTPClient.prototype._onOpen = function(evt){
-    console.log("\nSOCKET OPEN!")
-
     this.socket.ondata = this._onData.bind(this);
 
     this.socket.onclose = this._onClose.bind(this);
@@ -409,7 +397,6 @@ SMTPClient.prototype._onOpen = function(evt){
  */
 SMTPClient.prototype._onData = function(evt){
     this._log("SERVER", evt.data);
-    console.log("\nS: " + evt.data.replace(/\r/g, "<CR>").replace(/\n/g, "<LF>\n"));
     this._parser.send(evt.data);
 };
 
@@ -449,7 +436,6 @@ SMTPClient.prototype._onError = function(evt){
  * @param {Event} evt Event object. Not used
  */
 SMTPClient.prototype._onClose = function(evt){
-    console.log("\nRECEIVED CLOSE EVENT")
     this._destroy();
 };
 
@@ -461,7 +447,6 @@ SMTPClient.prototype._onClose = function(evt){
  * @param {Object} command Parsed data
  */
 SMTPClient.prototype._onCommand = function(command){
-    console.log("\nS: " + JSON.stringify(command));
     this._currentAction.call(this, command);
 }
 
@@ -499,7 +484,6 @@ SMTPClient.prototype._log = function(sender, data, binary){
  */
 SMTPClient.prototype._sendCommand = function(str){
     this._log("CLIENT", str);
-    console.log("\nC: " + str.replace(/\r/g, "<CR>").replace(/\n/g, "<LF>\n"));
     this.waitDrain = this.socket.send(str + (str.substr(-2) != "\r\n" ? "\r\n" : ""));
 };
 
@@ -680,7 +664,6 @@ SMTPClient.prototype._actionIdle = function(command){
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
 SMTPClient.prototype._actionMAIL = function(command){
-    console.log(command)
     if(!command.success){
         this._onError(new Error("Mail from command failed - " + command.line));
         return;
@@ -708,10 +691,7 @@ SMTPClient.prototype._actionRCPT = function(command){
         this._envelope.rcptFailed.push(this._envelope.curRecipient);
     }
 
-    console.log("\nFAILED:\n" + JSON.stringify(this._envelope.rcptFailed))
-
     if(!this._envelope.rcptQueue.length){
-        console.log("FFF:", this._envelope.rcptFailed.length, this._envelope.to.length)
         if(this._envelope.rcptFailed.length < this._envelope.to.length){
             this._currentAction = this._actionDATA;
             this._sendCommand("DATA");
@@ -745,7 +725,7 @@ SMTPClient.prototype._actionRSET = function(command){
 };
 
 /**
- * Response to the DATA command. Server is now waiting for a message, so emit `onwaiting`
+ * Response to the DATA command. Server is now waiting for a message, so emit `onready`
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
@@ -759,12 +739,12 @@ SMTPClient.prototype._actionDATA = function(command){
 
     this._dataMode = true;
     this._currentAction = this._actionIdle;
-    this.onwaiting(this._envelope.rcptFailed);
+    this.onready(this._envelope.rcptFailed);
 };
 
 /**
  * Response from the server, once the message stream has ended with <CR><LF>.<CR><LF>
- * Emits `onsend`.
+ * Emits `ondone`.
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
@@ -773,10 +753,10 @@ SMTPClient.prototype._actionStream = function(command){
 
     if(!command.success){
         // Message failed
-        this.onsend(false);
+        this.ondone(false);
     }else{
         // Message sent succesfully
-        this.onsend(true);
+        this.ondone(true);
     }
 
     // If the client wanted to do something else (eg. to quit), do not force idle

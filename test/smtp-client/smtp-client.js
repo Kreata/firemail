@@ -269,7 +269,7 @@ this.SMTPClientTests= {
             test.ifError(err, "Mail validation failed");
         }
 
-        client.onwaiting = function(){
+        client.onready = function(){
             test.ok(1, "Mail validation passed");
             client.close();
         }
@@ -303,7 +303,7 @@ this.SMTPClientTests= {
             test.ifError(err, "Mail validation failed");
         }
 
-        client.onwaiting = function(failedRecipients){
+        client.onready = function(failedRecipients){
             test.deepEqual(failedRecipients, ["fail@fail.ee"]);
             client.close();
         }
@@ -338,7 +338,7 @@ this.SMTPClientTests= {
             test.ifError(err, "DATA command failed");
         }
 
-        client.onwaiting = function(failedRecipients){
+        client.onready = function(failedRecipients){
             test.ok(1, "Waiting for data");
             var message = "Subject: Hello!\r\n\r\nMessage";
 
@@ -348,7 +348,7 @@ this.SMTPClientTests= {
             client.end();
         }
 
-        client.onsend = function(status){
+        client.ondone = function(status){
             test.ok(status, "message accepted");
             client.quit();
         }
@@ -383,7 +383,7 @@ this.SMTPClientTests= {
             test.ifError(err, "DATA command failed");
         }
 
-        client.onwaiting = function(failedRecipients){
+        client.onready = function(failedRecipients){
             test.ok(1, "Waiting for data");
             var message = "Subject: Hello!\r\n\r\n.\r\n.\n.\r\n.Message\r\n.\r\n";
 
@@ -393,7 +393,7 @@ this.SMTPClientTests= {
             client.end();
         }
 
-        client.onsend = function(status){
+        client.ondone = function(status){
             test.ok(status, "message accepted");
             client.quit();
         }
@@ -432,7 +432,7 @@ this.SMTPClientTests= {
             test.ifError(err, "DATA command failed");
         }
 
-        client.onwaiting = function(failedRecipients){
+        client.onready = function(failedRecipients){
             test.ok(1, "Waiting for data");
             var message = "Subject: Hello!\r\n\r\n.\r\n.\n.\r\n.Message\r\n.\r\n";
 
@@ -442,7 +442,7 @@ this.SMTPClientTests= {
             client.end();
         }
 
-        client.onsend = function(status){
+        client.ondone = function(status){
             test.ok(status, "message accepted");
         }
 

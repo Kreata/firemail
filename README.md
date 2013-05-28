@@ -68,8 +68,8 @@ The following connection options can be used with `simplesmtp.connect`:
 Once a connection is set up the following events can be listened to:
 
   * **onidle** - the connection to the SMTP server has been successfully set up and the client is waiting for an envelope. **NB!** this event is emitted multiple times - if an e-mail has been sent and the client has nothing to do, `onidle` is emitted again.
-  * **onwaiting** `(failedRecipients)` - the envelope is passed successfully to the server and a message stream can be started. The argument is an array of e-mail addresses not accepted as recipients by the server. If none of the recipient addresses is accepted, `onerror` is emitted instead.
-  * **onsend** `(success)` - the message was sent
+  * **onready** `(failedRecipients)` - the envelope is passed successfully to the server and a message stream can be started. The argument is an array of e-mail addresses not accepted as recipients by the server. If none of the recipient addresses is accepted, `onerror` is emitted instead.
+  * **ondone** `(success)` - the message was sent
   * **onerror** `(err)` - An error occurred. The connection will be closed shortly afterwards, so expect an `onclose` event as well
   * **onend** - connection to the client is closed
 
@@ -109,12 +109,12 @@ client.onidle = function(){
 The `to` part of the envelope must include **all** recipients from `To:`, `Cc:` and `Bcc:` fields.
 
 If envelope setup up fails, an error is emitted. If only some (not all)
-recipients are not accepted, the mail can still be sent. An `onwaiting` event
+recipients are not accepted, the mail can still be sent. An `onready` event
 is emitted when the server has accepted the `from` and at least one `to`
 address.
 
 ```javascript
-client.onwaiting = function(failedRecipients){
+client.onready = function(failedRecipients){
     if(failedRecipients.length){
         console.log("The following addresses were rejected: ", failedRecipients);
     }
@@ -124,14 +124,14 @@ client.onwaiting = function(failedRecipients){
 
 ### Sending a message
 
-When `onwaiting` event is emitted, it is possible to start sending mail. To do this
+When `onready` event is emitted, it is possible to start sending mail. To do this
 you can send the message with `client.send` calls (you also need to call `client.end()` once 
 the message is completed). 
 
 **NB!** you do need to escape the dots by yourself (unless you specificly define so with `disableEscaping` option).
 
 ```javascript
-client.onwaiting = function(){
+client.onready = function(){
     client.send("Subject: test\r\n");
     client.send("\r\n");
     client.send("Message body");
@@ -139,11 +139,11 @@ client.onwaiting = function(){
 }
 ```
 
-Once the message is delivered an `onsend` event is emitted. The event has an
+Once the message is delivered an `ondone` event is emitted. The event has an
 parameter which indicates if the message was accepted by the server (`true`) or not (`false`).
 
 ```
-client.onsend = function(success){
+client.ondone = function(success){
     if(success){
         console.log("The message was transmitted successfully with "+response);
     }
@@ -155,7 +155,7 @@ client.onsend = function(success){
 At any time you can access the traffic log between the client and the server from the `client.log` array.
 
 ```javascript
-client.onsend = function(success){
+client.ondone = function(success){
     // show the last message
     console.log(client.log.slice(-1));
 }
