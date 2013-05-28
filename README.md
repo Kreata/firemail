@@ -1,6 +1,6 @@
 # E-mail modules for FirefoxOS
 
-*well, currenlty only SMTP client, but that's something as well*
+*SMTP client currently only, but that's something as well*
 
 ## Running the tests
 
@@ -23,6 +23,13 @@ Install the application to the FirefoxOS simulator (use the manifest file in the
 **Step 3**
 
 Open the application in the simulator. The launch page is a [nodeunit](https://github.com/caolan/nodeunit) testrunner.
+
+## SMTPClient
+
+### Quirks
+
+  * `STARTTLS` is currently not supported
+  * Only `PLAIN` and `USER` authentication mechanisms are supported
 
 ## License
 
