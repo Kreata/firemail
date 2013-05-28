@@ -6,13 +6,15 @@
 
 **Step 1**
 
-Install and run the testserver (running on port 1025) with `npm`:
+Install and run the testserver (running on port 1025, so make sure this port is available) with `npm`:
 
 ```bash
 cd test/smtp-server
 npm install
 npm start
 ```
+
+NB! Since self signed certificates are not allowed, only unsecure connections are tested against this test server. For secure connection tests external server (smtp.gmail.com) is used.
 
 **Step 2**
 

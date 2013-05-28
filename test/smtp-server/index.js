@@ -13,7 +13,6 @@ var simplesmtp = require("simplesmtp"),
 
 console.log("Creating test SMTP Server on port 1025");
 
-
 smtp.listen(1025);
 
 smtp.on("authorizeUser", function(connection, username, password, callback){

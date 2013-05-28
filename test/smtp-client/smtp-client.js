@@ -450,5 +450,27 @@ this.SMTPClientTests= {
             test.ok(1, "Connection closed");
             test.done();
         }
+    },
+
+    'Connect to and disconnect from a secure testserver': function(test){
+        test.expect(2);
+
+        // Self signed certificates are not supported, so we need a trusted secure server
+        var client = new SMTPClient("smtp.gmail.com", 465, {useSSL: true});
+        client.connect();
+        
+        client.onidle = function(){
+            test.ok(1, "Connection opened");
+            client.close();
+        }
+
+        client.onerror = function(err){
+            test.ifError(err);
+        }
+
+        client.onclose = function(){
+            test.ok(1, "Connection closed");
+            test.done();
+        }
     }
 }
