@@ -1,15 +1,18 @@
 this.SMTPResponseParserTests= {
+    
     'Create SMTPResponseParser object': function (test) {
         var parser = new SMTPResponseParser();
         test.ok(true, parser instanceof SMTPResponseParser);
         test.done();
     },
+    
     'Write data to parser': function (test) {
         var parser = new SMTPResponseParser();
-        parser.write("test");
+        parser.send("test");
         test.equal("test", parser._remainder);
         test.done();
     },
+
     'Events: ondata': function (test) {
         test.expect(1);
 
@@ -18,7 +21,7 @@ this.SMTPResponseParserTests= {
                 success: true,
                 statusCode: 250, 
                 enhancedStatus: "1.2.3", 
-                data: ["test"], 
+                data: "test", 
                 line: line
             }, i=0;
 
@@ -40,7 +43,7 @@ this.SMTPResponseParserTests= {
             test.ifError(err);
         }
 
-        parser.write(line + "\r\n");
+        parser.send(line + "\r\n");
     },
 
     'Events: ondata, onend': function (test) {
@@ -51,7 +54,7 @@ this.SMTPResponseParserTests= {
                 success: true,
                 statusCode: 250, 
                 enhancedStatus: "1.2.3", 
-                data: ["test"], 
+                data: "test", 
                 line: line
             }, i=0;
 
@@ -72,9 +75,10 @@ this.SMTPResponseParserTests= {
             test.ifError(err);
         }
 
-        parser.write(line);
+        parser.send(line);
         parser.end();
     },
+
     'Events: ondata, onend, write one byte at a time': function (test) {
         test.expect(2);
 
@@ -84,13 +88,13 @@ this.SMTPResponseParserTests= {
                 success: true,
                 statusCode: 250, 
                 enhancedStatus: "1.2.3", 
-                data: ["test"], 
+                data: "test", 
                 line: lines[0]
             },{
                 success:true,
                 statusCode: 252, 
                 enhancedStatus: null, 
-                data: ["pest"], 
+                data: "pest", 
                 line: lines[1]
             }]
 
@@ -104,7 +108,7 @@ this.SMTPResponseParserTests= {
             test.done();
         }
 
-        Array.prototype.slice.call(lines.join("\r\n")).forEach(parser.write.bind(parser));
+        Array.prototype.slice.call(lines.join("\r\n")).forEach(parser.send.bind(parser));
         parser.end();
     },
 
@@ -116,7 +120,7 @@ this.SMTPResponseParserTests= {
                 success: true,
                 statusCode: 250, 
                 enhancedStatus: null, 
-                data: ["test1", "test2 test3", "test4"], 
+                data: "test1\ntest2 test3\ntest4", 
                 line: lines.join("\n")
             }, i=0;
 
@@ -137,7 +141,7 @@ this.SMTPResponseParserTests= {
             test.ifError(err);
         }
 
-        Array.prototype.slice.call(lines.join("\r\n")).forEach(parser.write.bind(parser));
+        Array.prototype.slice.call(lines.join("\r\n")).forEach(parser.send.bind(parser));
         parser.end();
     },
 
@@ -155,21 +159,21 @@ this.SMTPResponseParserTests= {
                     success: true,
                     statusCode: 256, 
                     enhancedStatus: "1.2.3", 
-                    data: ["test"], 
+                    data: "test", 
                     line: lines[0]
                 },
                 {
                     success: true,
                     statusCode: 250, 
                     enhancedStatus: null, 
-                    data: ["test1", "test2 test3", "test4"], 
+                    data: "test1\ntest2 test3\ntest4", 
                     line: lines.slice(1, 4).join("\n")
                 },
                 {
                     success: true,
                     statusCode: 254, 
                     enhancedStatus: null, 
-                    data: ["test6"], 
+                    data: "test6", 
                     line: lines[4]
                 }],
             i=0;
@@ -188,7 +192,7 @@ this.SMTPResponseParserTests= {
             test.ifError(err);
         }
 
-        Array.prototype.slice.call(lines.join("\r\n")).forEach(parser.write.bind(parser));
+        Array.prototype.slice.call(lines.join("\r\n")).forEach(parser.send.bind(parser));
         parser.end();
     },
 
@@ -200,7 +204,7 @@ this.SMTPResponseParserTests= {
                 success: false,
                 statusCode: null, 
                 enhancedStatus: null, 
-                data: ["nostatus"], 
+                data: "nostatus", 
                 line: line
             }, i=0;
 
@@ -221,7 +225,7 @@ this.SMTPResponseParserTests= {
             test.ok(err);
         }
 
-        parser.write(line);
+        parser.send(line);
         parser.end();
     },
 
@@ -235,9 +239,9 @@ this.SMTPResponseParserTests= {
             test.done();
         }
 
-        parser.write("250 test1\r\n");
+        parser.send("250 test1\r\n");
         parser.end();
-        parser.write("250 test1\r\n");
+        parser.send("250 test1\r\n");
     },
 
     'Events: onerror, closed stream, no end': function (test) {
@@ -250,7 +254,7 @@ this.SMTPResponseParserTests= {
             test.done();
         }
 
-        parser.write("250 test1\r\n");
+        parser.send("250 test1\r\n");
         parser.end();
         parser.end();
     },
@@ -269,21 +273,21 @@ this.SMTPResponseParserTests= {
                     success: true,
                     statusCode: 256, 
                     enhancedStatus: "1.2.3", 
-                    data: ["test"], 
+                    data: "test", 
                     line: lines[0]
                 },
                 {
                     success: true,
                     statusCode: 250, 
                     enhancedStatus: null, 
-                    data: ["test1", "test2 test3", "test4"], 
+                    data: "test1\ntest2 test3\ntest4", 
                     line: lines.slice(1, 4).join("\n")
                 },
                 {
                     success: true,
                     statusCode: 254, 
                     enhancedStatus: null, 
-                    data: ["test6"], 
+                    data: "test6", 
                     line: lines[4]
                 }],
             i=0;
@@ -302,7 +306,7 @@ this.SMTPResponseParserTests= {
             test.ifError(err);
         }
 
-        Array.prototype.slice.call(lines.join("\n")).forEach(parser.write.bind(parser));
+        Array.prototype.slice.call(lines.join("\n")).forEach(parser.send.bind(parser));
         parser.end();
     },
 
@@ -314,7 +318,7 @@ this.SMTPResponseParserTests= {
                 success: false,
                 statusCode: 150, 
                 enhancedStatus: "1.2.3", 
-                data: ["test"], 
+                data: "test", 
                 line: line
             }, i=0;
 
@@ -336,7 +340,7 @@ this.SMTPResponseParserTests= {
             test.ifError(err);
         }
 
-        parser.write(line + "\r\n");
+        parser.send(line + "\r\n");
     }
 
 };

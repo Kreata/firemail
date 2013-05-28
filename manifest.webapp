@@ -1,0 +1,18 @@
+{
+    "version": "1",
+    "name": "TCP Test",
+    "type" : "privileged",
+    "launch_path": "/test/testrunner.html",
+    "description": "TCP test app",
+    "developer": {
+        "name": "Andris Reinman",
+        "url": "http://www.andrisreinman.com"
+    },
+    "installs_allowed_from": ["*"],
+    "default_locale": "en",
+    "permissions": {
+        "tcp-socket": {
+            "description" : "Testime socketit"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "smtp-server",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Tests for smtp client",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "author": "Andris Reinman",
+  "license": "MIT",
+  "dependencies": {
+    "simplesmtp": "*"
+  }
+}
