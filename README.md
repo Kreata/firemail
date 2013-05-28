@@ -1,6 +1,6 @@
 # E-mail modules for FirefoxOS
 
-*SMTP client currently only, but that's something as well*
+*SMTP client currently only, but at least that's something as well*
 
 ## Running the tests
 
@@ -62,6 +62,104 @@ The following connection options can be used with `simplesmtp.connect`:
   * **authMethod** *String* Force specific authentication method (eg. `"PLAIN"` for using `AUTH PLAIN`)
   * **disableEscaping** *Boolean* If set to true, do not escape dots on the beginning of the lines
   * **logLength** *Number* How many messages between the client and the server to log. Set to false to disable logging. Defaults to 6
+
+### Connection events
+
+Once a connection is set up the following events can be listened to:
+
+  * **onidle** - the connection to the SMTP server has been successfully set up and the client is waiting for an envelope. **NB!** this event is emitted multiple times - if an e-mail has been sent and the client has nothing to do, `onidle` is emitted again.
+  * **onwaiting** `(failedRecipients)` - the envelope is passed successfully to the server and a message stream can be started. The argument is an array of e-mail addresses not accepted as recipients by the server. If none of the recipient addresses is accepted, `onerror` is emitted instead.
+  * **onsend** `(success)` - the message was sent
+  * **onerror** `(err)` - An error occurred. The connection will be closed shortly afterwards, so expect an `onclose` event as well
+  * **onend** - connection to the client is closed
+
+Example:
+
+```javascript
+client.onidle = function(){
+    console.log("Connection has been established");
+    // this event will be called again once a message has been sent
+    // so do not just initiate a new message here, as infinite loops might occur
+}
+```
+
+### Sending an envelope
+
+When an `onidle` event is emitted, an envelope object can be sent to the server.
+This includes a string `from` and a single string or an array of strings for `to` property.
+
+Envelope can be sent with `client.useEnvelope(envelope)`
+
+```javascript
+// run only once as 'idle' is emitted again after message delivery
+var alreadySending = false;
+
+client.onidle = function(){
+    if(alreadySending){
+        return;
+    }
+    alreadySending = true;
+    client.useEnvelope({
+        from: "me@example.com",
+        to: ["receiver1@example.com", "receiver2@example.com"]
+    });
+}
+```
+
+The `to` part of the envelope must include **all** recipients from `To:`, `Cc:` and `Bcc:` fields.
+
+If envelope setup up fails, an error is emitted. If only some (not all)
+recipients are not accepted, the mail can still be sent. An `onwaiting` event
+is emitted when the server has accepted the `from` and at least one `to`
+address.
+
+```javascript
+client.onwaiting = function(failedRecipients){
+    if(failedRecipients.length){
+        console.log("The following addresses were rejected: ", failedRecipients);
+    }
+    // start transfering the e-mail
+}
+```
+
+### Sending a message
+
+When `onwaiting` event is emitted, it is possible to start sending mail. To do this
+you can send the message with `client.send` calls (you also need to call `client.end()` once 
+the message is completed). 
+
+**NB!** you do need to escape the dots by yourself (unless you specificly define so with `disableEscaping` option).
+
+```javascript
+client.onwaiting = function(){
+    client.send("Subject: test\r\n");
+    client.send("\r\n");
+    client.send("Message body");
+    client.end();
+}
+```
+
+Once the message is delivered an `onsend` event is emitted. The event has an
+parameter which indicates if the message was accepted by the server (`true`) or not (`false`).
+
+```
+client.onsend = function(success){
+    if(success){
+        console.log("The message was transmitted successfully with "+response);
+    }
+}
+```
+
+### Logging
+
+At any time you can access the traffic log between the client and the server from the `client.log` array.
+
+```javascript
+client.onsend = function(success){
+    // show the last message
+    console.log(client.log.slice(-1));
+}
+```
 
 ## License
 
