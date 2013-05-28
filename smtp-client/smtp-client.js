@@ -31,6 +31,7 @@
  * @param {String} [options.name] Client hostname for introducing itself to the server
  * @param {Object} [options.auth] Authentication options. Depends on the preferred authentication method. Usually {user, pass}
  * @param {String} [options.authMethod] Force specific authentication method
+ * @param {String} [options.disableEscaping] If set to true, do not escape dots on the beginning of the lines
  * @param {Number} [options.logLength=6] How many messages between the client and the server to log. Set to false to disable logging
  */
 function SMTPClient(host, port, options){
@@ -119,6 +120,16 @@ function SMTPClient(host, port, options){
     this._dataMode = false;
 
     /**
+     * Keep track of the last bytes to see how the terminating dot should be placed
+     */ 
+    this._lastDataBytes = "";
+
+    /**
+     * Envelope object for tracking who is sending mail to whom
+     */
+    this._envelope = null;
+
+    /**
      * Stores the function that should be run after a response has been received
      * from the server
      */
@@ -163,8 +174,10 @@ SMTPClient.prototype.onidle = function(){};
 
 /**
  * The connection is waiting for the mail body
+ *
+ * @param {Array} failedRecipients List of addresses that were not accepted as recipients
  */
-SMTPClient.prototype.onwaiting = function(){};
+SMTPClient.prototype.onwaiting = function(failedRecipients){};
 
 /**
  * The mail has been sent. See `log.slice(-1)` for the exact response message.
@@ -270,9 +283,10 @@ SMTPClient.prototype.close = function(){
 SMTPClient.prototype.useEnvelope = function(envelope){
     this._envelope = envelope || {};
     this._envelope.from = [].concat(this._envelope.from || ("anonymous@"+this.options.name))[0];
+    this._envelope.to = [].concat(this._envelope.to || []);
 
     // clone the recipients array for latter manipulation
-    this._envelope.rcptQueue = [].concat(this._envelope.to || []);
+    this._envelope.rcptQueue = [].concat(this._envelope.to);
     this._envelope.rcptFailed = [];
 
     console.log("\nFROM:\n" + this._envelope.from)
@@ -291,11 +305,21 @@ SMTPClient.prototype.useEnvelope = function(envelope){
  * @return {Boolean} If true, it is safe to send more data, if false, you *should* wait for the ondrain event before sending more
  */
 SMTPClient.prototype.send = function(chunk){
+    console.log(chunk)
+    console.log(this._dataMode?1:0)
     // works only in data mode
     if(!this._dataMode){
         // this line should never be reached but if it does,
         // act like everything's normal.
         return true;
+    }
+
+    // escape dots
+    if(!this.options.disableEscaping){
+        chunk = chunk.replace(/\n\./g, "\n..");
+        if(this._lastDataBytes.substr(-1) == "\n" && chunk.charAt(0) == "."){
+            chunk = "." + chunk;
+        }
     }
 
     // Keeping eye on the last bytes sent, to see if there is a <CR><LF> sequence
@@ -412,7 +436,7 @@ SMTPClient.prototype._onError = function(evt){
     }else if(evt.data instanceof Error){
         this.onerror(evt.data);
     }else{
-        this.onerror(new Error(evt));
+        this.onerror(new Error(evt && evd.data && evt.data.message || evt.data || evt));
     }
 
     this.close();
@@ -515,8 +539,8 @@ SMTPClient.prototype._authenticateUser = function(){
             this._currentAction = this._actionAUTHComplete;
             this._sendCommand(
                 // convert to BASE64
+                "AUTH PLAIN " +
                 window.btoa(unescape(encodeURIComponent(
-                    "AUTH PLAIN " +
                     //this.options.auth.user+"\u0000"+
                     "\u0000"+ // skip authorization identity as it causes problems with some servers
                     this.options.auth.user+"\u0000"+
@@ -656,6 +680,7 @@ SMTPClient.prototype._actionIdle = function(command){
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
 SMTPClient.prototype._actionMAIL = function(command){
+    console.log(command)
     if(!command.success){
         this._onError(new Error("Mail from command failed - " + command.line));
         return;
@@ -686,6 +711,7 @@ SMTPClient.prototype._actionRCPT = function(command){
     console.log("\nFAILED:\n" + JSON.stringify(this._envelope.rcptFailed))
 
     if(!this._envelope.rcptQueue.length){
+        console.log("FFF:", this._envelope.rcptFailed.length, this._envelope.to.length)
         if(this._envelope.rcptFailed.length < this._envelope.to.length){
             this._currentAction = this._actionDATA;
             this._sendCommand("DATA");
@@ -733,7 +759,7 @@ SMTPClient.prototype._actionDATA = function(command){
 
     this._dataMode = true;
     this._currentAction = this._actionIdle;
-    this.onwaiting();
+    this.onwaiting(this._envelope.rcptFailed);
 };
 
 /**
@@ -743,6 +769,8 @@ SMTPClient.prototype._actionDATA = function(command){
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
 SMTPClient.prototype._actionStream = function(command){
+    this._currentAction = this._actionIdle;
+
     if(!command.success){
         // Message failed
         this.onsend(false);
@@ -751,7 +779,9 @@ SMTPClient.prototype._actionStream = function(command){
         this.onsend(true);
     }
 
-    // Waiting for new connections
-    this._currentAction = this._actionIdle;
-    this.onidle();
+    // If the client wanted to do something else (eg. to quit), do not force idle
+    if(this._currentAction == this._actionIdle){
+        // Waiting for new connections
+        this.onidle();
+    }
 };

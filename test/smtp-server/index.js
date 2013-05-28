@@ -21,17 +21,20 @@ smtp.on("authorizeUser", function(connection, username, password, callback){
 });
 
 smtp.on("validateSender", function(connection, email, callback){
-    callback(null, email != "fail@fail.ee")
+    callback(email == "fail@fail.ee" ? new Error("FAIL"): null)
 });
 
 smtp.on("validateRecipient", function(connection, email, callback){
-    callback(null, email != "fail@fail.ee")
+    callback(email == "fail@fail.ee" ? new Error("FAIL"): null)
 });
 
 smtp.on("startData", function(connection){
     console.log("Message from:", connection.from);
     console.log("Message to:", connection.to);
-    smtp.pipe(process.stdout);
+});
+
+smtp.on("data", function(connection, chunk){
+//    console.log(chunk.toString());
 });
 
 smtp.on("dataReady", function(connection, callback){
