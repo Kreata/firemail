@@ -163,6 +163,12 @@ client.ondone = function(success){
 }
 ```
 
+### Closing the connection
+
+Once you have done sending messages and do not want to keep the connection open, you can gracefully close the connection with `client.quit()` or non-gracefully (if you just want to shut down the connection and do not care for the server) with `client.close()`.
+
+If you run `quit` or `close` in the `ondone` event, then the next `onidle` is never called.
+
 ## License
 
 **MIT**

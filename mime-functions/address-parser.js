@@ -35,7 +35,7 @@ var MIMEAddressParser = {};
  * @return {Array} An array of address objects
  */
 MIMEAddressParser.parse = function(str){
-    var tokenizer = new this.Tokenizer(str),
+    var tokenizer = new MIMEAddressParser.Tokenizer(str),
         tokens = tokenizer.tokenize();
 
     var addresses = [],
@@ -55,12 +55,12 @@ MIMEAddressParser.parse = function(str){
         addresses.push(address);
     }
 
-    addresses.forEach((function(address){
-        address = this._handleAddress(address);
+    addresses.forEach(function(address){
+        address = MIMEAddressParser._handleAddress(address);
         if(address.length){
             parsedAddresses = parsedAddresses.concat(address);
         }
-    }).bind(this));
+    });
 
     return parsedAddresses;
 };

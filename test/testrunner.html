@@ -7,10 +7,13 @@
     <script src="../smtp-client/smtp-response-parser.js"></script>
     <script src="../smtp-client/smtp-client.js"></script>
     <script src="../mime-functions/address-parser.js"></script>
+    <script src="../mime-functions/mime-functions.js"></script>
     
     <script src="smtp-client/smtp-response-parser.js"></script>
     <script src="smtp-client/smtp-client.js"></script>
     <script src="mime-functions/address-parser.js"></script>
+    <script src="mime-functions/base64.js"></script>
+    <script src="mime-functions/charset.js"></script>
 
   </head>
   <body>
@@ -18,7 +21,9 @@
       nodeunit.run({
         'smtp-response-parser': SMTPResponseParserTests,
         'smtp-client': SMTPClientTests,
-        'address-parser': MIMEAddressParserTests
+        'address-parser': MIMEAddressParserTests,
+        'base64': Base64Tests,
+        'charset': CharsetTests
       });
     </script>
   </body>
