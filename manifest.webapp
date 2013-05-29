@@ -1,6 +1,6 @@
 {
     "version": "1",
-    "name": "TCP Test",
+    "name": "firemail test runner",
     "type" : "privileged",
     "launch_path": "/test/testrunner.html",
     "description": "TCP test app",
