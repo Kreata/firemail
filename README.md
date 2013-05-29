@@ -18,7 +18,7 @@ NB! Since self signed certificates are not allowed, only unsecure connections ar
 
 **Step 2**
 
-Install the application to the FirefoxOS simulator (use the [manifest file](webapp.manifest) in the root directory)
+Install the application to the FirefoxOS simulator (use the [manifest file](manifest.webapp) in the root directory)
 
 **Step 3**
 
