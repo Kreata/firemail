@@ -20,11 +20,11 @@ smtp.on("authorizeUser", function(connection, username, password, callback){
 });
 
 smtp.on("validateSender", function(connection, email, callback){
-    callback(email == "fail@fail.ee" ? new Error("FAIL"): null)
+    callback(email == "fail@fail.ee" ? new Error("FAIL"): null);
 });
 
 smtp.on("validateRecipient", function(connection, email, callback){
-    callback(email == "fail@fail.ee" ? new Error("FAIL"): null)
+    callback(email == "fail@fail.ee" ? new Error("FAIL"): null);
 });
 
 smtp.on("startData", function(connection){

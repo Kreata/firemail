@@ -3,16 +3,22 @@
     <meta charset="utf-8"/>
     <title>Email tests</title>
     <script src="nodeunit.js"></script>
+    
     <script src="../smtp-client/smtp-response-parser.js"></script>
     <script src="../smtp-client/smtp-client.js"></script>
-    <script src="smtp-response-parser/smtp-response-parser.js"></script>
+    <script src="../mime-functions/address-parser.js"></script>
+    
+    <script src="smtp-client/smtp-response-parser.js"></script>
     <script src="smtp-client/smtp-client.js"></script>
+    <script src="mime-functions/address-parser.js"></script>
+
   </head>
   <body>
     <script>
       nodeunit.run({
         'smtp-response-parser': SMTPResponseParserTests,
-        'smtp-client': SMTPClientTests
+        'smtp-client': SMTPClientTests,
+        'address-parser': MIMEAddressParserTests
       });
     </script>
   </body>

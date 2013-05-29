@@ -15,16 +15,16 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.close();
-        }
+        };
 
         client.onerror = function(err){
             test.ifError(err);
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'Disconnect with QUIT': function(test){
@@ -36,16 +36,16 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
-        }
+        };
 
         client.onerror = function(err){
             test.ifError(err);
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'Authenticate with default method': function(test){
@@ -63,16 +63,16 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
-        }
+        };
 
         client.onerror = function(err){
             test.ifError(err);
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'Authenticate using PLAIN': function(test){
@@ -91,16 +91,16 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
-        }
+        };
 
         client.onerror = function(err){
             test.ifError(err);
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'Authenticate using LOGIN': function(test){
@@ -119,16 +119,16 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
-        }
+        };
 
         client.onerror = function(err){
             test.ifError(err);
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'Authenticate with invalid data': function(test){
@@ -147,16 +147,16 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(false, "Connection should not be opened, as authentication fails");
             client.quit();
-        }
+        };
 
         client.onerror = function(err){
             test.ok(err, "Authentication error");
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'MAIL FROM fails': function(test){
@@ -175,17 +175,17 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "fail@fail.ee"})
-        }
+            client.useEnvelope({from: "fail@fail.ee"});
+        };
 
         client.onerror = function(err){
             test.ok(err, "Mail validation failed");
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'RCPT TO: fails (no recipients)': function(test){
@@ -204,17 +204,17 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee"})
-        }
+            client.useEnvelope({from: "nofail@fail.ee"});
+        };
 
         client.onerror = function(err){
             test.ok(err, "Mail validation failed");
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'RCPT TO: fails (invalid recipient)': function(test){
@@ -233,17 +233,17 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee", to: "fail@fail.ee"})
-        }
+            client.useEnvelope({from: "nofail@fail.ee", to: "fail@fail.ee"});
+        };
 
         client.onerror = function(err){
             test.ok(err, "Mail validation failed");
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'RCPT TO: success': function(test){
@@ -262,22 +262,22 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee", to: "nofail@fail.ee"})
-        }
+            client.useEnvelope({from: "nofail@fail.ee", to: "nofail@fail.ee"});
+        };
 
         client.onerror = function(err){
             test.ifError(err, "Mail validation failed");
-        }
+        };
 
         client.onready = function(){
             test.ok(1, "Mail validation passed");
             client.close();
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'RCPT TO: success with some failures': function(test){
@@ -296,22 +296,22 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee", "fail@fail.ee"]})
-        }
+            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee", "fail@fail.ee"]});
+        };
 
         client.onerror = function(err){
             test.ifError(err, "Mail validation failed");
-        }
+        };
 
         client.onready = function(failedRecipients){
             test.deepEqual(failedRecipients, ["fail@fail.ee"]);
             client.close();
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'DATA: success': function(test){
@@ -330,13 +330,12 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee"]})
-        }
+            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee"]});
+        };
 
         client.onerror = function(err){
-            test.equal(1, err.message)
             test.ifError(err, "DATA command failed");
-        }
+        };
 
         client.onready = function(failedRecipients){
             test.ok(1, "Waiting for data");
@@ -346,17 +345,17 @@ this.SMTPClientTests= {
                 client.send(c);
             });
             client.end();
-        }
+        };
 
         client.ondone = function(status){
             test.ok(status, "message accepted");
             client.quit();
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'DATA: success with dots': function(test){
@@ -375,13 +374,12 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee"]})
-        }
+            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee"]});
+        };
 
         client.onerror = function(err){
-            test.equal(1, err.message)
             test.ifError(err, "DATA command failed");
-        }
+        };
 
         client.onready = function(failedRecipients){
             test.ok(1, "Waiting for data");
@@ -391,17 +389,17 @@ this.SMTPClientTests= {
                 client.send(c);
             });
             client.end();
-        }
+        };
 
         client.ondone = function(status){
             test.ok(status, "message accepted");
             client.quit();
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
     'Idle after sending message': function(test){
         test.expect(5);
@@ -424,13 +422,12 @@ this.SMTPClientTests= {
                 return;
             }
             test.ok(1, "Connection opened");
-            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee"]})
-        }
+            client.useEnvelope({from: "nofail@fail.ee", to: ["nofail@fail.ee"]});
+        };
 
         client.onerror = function(err){
-            test.equal(1, err.message)
             test.ifError(err, "DATA command failed");
-        }
+        };
 
         client.onready = function(failedRecipients){
             test.ok(1, "Waiting for data");
@@ -440,16 +437,16 @@ this.SMTPClientTests= {
                 client.send(c);
             });
             client.end();
-        }
+        };
 
         client.ondone = function(status){
             test.ok(status, "message accepted");
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     },
 
     'Connect to and disconnect from a secure testserver': function(test){
@@ -462,15 +459,15 @@ this.SMTPClientTests= {
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.close();
-        }
+        };
 
         client.onerror = function(err){
             test.ifError(err);
-        }
+        };
 
         client.onclose = function(){
             test.ok(1, "Connection closed");
             test.done();
-        }
+        };
     }
-}
+};

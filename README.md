@@ -128,7 +128,9 @@ When `onready` event is emitted, it is possible to start sending mail. To do thi
 you can send the message with `client.send` calls (you also need to call `client.end()` once 
 the message is completed). 
 
-**NB!** you do need to escape the dots by yourself (unless you specificly define so with `disableEscaping` option).
+`send` method returns the state of the downstream buffer - if it returns `true`, it is safe to send more data, otherwise you should (but don't have to) wait for the `ondrain` event before you send more data.
+
+**NB!** you do not have to escape the dots in the beginning of the lines by yourself (unless you specificly define so with `disableEscaping` option).
 
 ```javascript
 client.onready = function(){

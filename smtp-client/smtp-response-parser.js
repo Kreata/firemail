@@ -36,7 +36,7 @@ var SMTPResponseParser = function(){
      * If set to true, do not accept any more input
      */
     this.destroyed = false;
-}
+};
 
 // Event handlers
 
@@ -66,7 +66,7 @@ SMTPResponseParser.prototype.send = function(chunk){
     for(var i=0, len = lines.length; i<len; i++){
         this._processLine(lines[i]);
     }
-}
+};
 
 /**
  * Indicate that all the data from the server has been received. Can be called only once.
@@ -88,7 +88,7 @@ SMTPResponseParser.prototype.end = function(chunk){
 
     this.destroyed = true;
     this.onend();
-}
+};
 
 // Private API
 
@@ -149,4 +149,4 @@ SMTPResponseParser.prototype._processLine = function(line){
         });
         this._block = {data: [], lines: [], statusCode: null};
     }
-}
+};

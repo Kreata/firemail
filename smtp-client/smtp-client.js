@@ -227,7 +227,7 @@ SMTPClient.prototype.suspend = function(){
     if(this.socket && this.socket.readyState === "open"){
         this.socket.suspend();
     }
-}
+};
 
 /**
  * Resumes `data` events from the downstream SMTP server. Be careful of not
@@ -237,7 +237,7 @@ SMTPClient.prototype.resume = function(){
     if(this.socket && this.socket.readyState === "open"){
         this.socket.resume();
     }
-}
+};
 
 /**
  * Sends QUIT
@@ -250,7 +250,7 @@ SMTPClient.prototype.quit = function(){
 /**
  * Reset authentication
  * 
- * @param {Object} [auth] Use this if you want to authenticate as another user
+ * @param {Object} [auth] Use this if you want to authenticate as another user
  */
 SMTPClient.prototype.reset = function(auth){
     this.options.auth = auth || this.options.auth;
@@ -423,7 +423,7 @@ SMTPClient.prototype._onError = function(evt){
     }else if(evt.data instanceof Error){
         this.onerror(evt.data);
     }else{
-        this.onerror(new Error(evt && evd.data && evt.data.message || evt.data || evt));
+        this.onerror(new Error(evt && evt.data && evt.data.message || evt.data || evt));
     }
 
     this.close();
@@ -448,7 +448,7 @@ SMTPClient.prototype._onClose = function(evt){
  */
 SMTPClient.prototype._onCommand = function(command){
     this._currentAction.call(this, command);
-}
+};
 
 /**
  * Ensures that the connection is closed and such
@@ -475,7 +475,7 @@ SMTPClient.prototype._log = function(sender, data, binary){
             this.log = this.log.slice(-this._logLength);
         }
     }
-}
+};
 
 /**
  * Send a string command to the server, also append \r\n if needed
