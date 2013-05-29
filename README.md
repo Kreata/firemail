@@ -1,6 +1,6 @@
-# E-mail modules for FirefoxOS
+# E-mail components for FirefoxOS apps
 
-*SMTP client currently only, but at least that's something as well*
+*SMTP client currently only, but at least that's something as well :)*
 
 ## Running the tests
 
@@ -18,7 +18,7 @@ NB! Since self signed certificates are not allowed, only unsecure connections ar
 
 **Step 2**
 
-Install the application to the FirefoxOS simulator (use the manifest file in the root directory)
+Install the application to the FirefoxOS simulator (use the [manifest file](webapp.manifest) in the root directory)
 
 **Step 3**
 
