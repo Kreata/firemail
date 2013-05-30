@@ -200,19 +200,11 @@ SMTPClient.prototype.connect = function(){
 
     this.socket = socket.open(this.host, this.port, {
         /*
-            We never expect anything else than ASCII from the SMTP server,
-            exept when SMTPUTF8 (RFC6531) parameter is used in which case
-            the server might also respond with UTF-8. As we never expect
-            anything else than ASCII or UTF-8 and TextEncoder can only encode
-            unicode, there is no need to use arraybuffers when communicating
-            with a SMTP server. Even if we want to use the 8BITMIME, we have
-            to use UTF-8 - actually, we can use UTF-16le/be as well but lets
-            just ignore this for now :)
-
-            So, assuming only UTF-8 both ways should always be fine and this
-            means that strings can be used instead of arraybuffers.
+            I wanted to use "string" at first but realized that if a
+            STARTTLS would have to be implemented not in the socket level
+            in the future, then the stream must be binary
         */
-        binaryType: "string",
+        binaryType: "arraybuffer",
         useSSL: this._secureMode
     });
 
@@ -325,7 +317,7 @@ SMTPClient.prototype.send = function(chunk){
     this._log("CLIENT", chunk, true);
 
     // pass the chunk to the socket
-    return (this.waitDrain = this.socket.send(chunk));
+    return (this.waitDrain = this.socket.send(new TextEncoder("UTF-8").encode(chunk).buffer));
 };
 
 /**
@@ -354,11 +346,11 @@ SMTPClient.prototype.end = function(chunk){
     // indicate that the stream has ended by sending a single dot on its own line
     // if the client already closed the data with \r\n no need to do it again
     if(this._lastDataBytes == "\r\n"){
-        this.waitDrain = this.socket.send(".\r\n");
+        this.waitDrain = this.socket.send(new Uint8Array([0x2E, 0x0D, 0x0A]).buffer); // .\r\n
     }else if(this._lastDataBytes.substr(-1) == "\r"){
-        this.waitDrain = this.socket.send("\n.\r\n");
+        this.waitDrain = this.socket.send(new Uint8Array([0x0A, 0x2E, 0x0D, 0x0A]).buffer); // \n.\r\n
     }else{
-        this.waitDrain = this.socket.send("\r\n.\r\n");
+        this.waitDrain = this.socket.send(new Uint8Array([0x0D, 0x0A, 0x2E, 0x0D, 0x0A]).buffer); // \r\n.\r\n
     }
 
     // end data mode
@@ -396,8 +388,9 @@ SMTPClient.prototype._onOpen = function(evt){
  * @param {Event} evt Event object. See `evt.data` for the chunk received
  */
 SMTPClient.prototype._onData = function(evt){
-    this._log("SERVER", evt.data);
-    this._parser.send(evt.data);
+    var stringPayload = new TextDecoder("UTF-8").decode(Uint8Array(evt.data));
+    this._log("SERVER", stringPayload);
+    this._parser.send(stringPayload);
 };
 
 /**
@@ -484,7 +477,7 @@ SMTPClient.prototype._log = function(sender, data, binary){
  */
 SMTPClient.prototype._sendCommand = function(str){
     this._log("CLIENT", str);
-    this.waitDrain = this.socket.send(str + (str.substr(-2) != "\r\n" ? "\r\n" : ""));
+    this.waitDrain = this.socket.send(new TextEncoder("UTF-8").encode(str + (str.substr(-2) != "\r\n" ? "\r\n" : "")).buffer);
 };
 
 /**
