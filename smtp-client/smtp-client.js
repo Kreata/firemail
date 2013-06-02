@@ -298,26 +298,8 @@ SMTPClient.prototype.send = function(chunk){
         return true;
     }
 
-    // escape dots
-    if(!this.options.disableEscaping){
-        chunk = chunk.replace(/\n\./g, "\n..");
-        if(this._lastDataBytes.substr(-1) == "\n" && chunk.charAt(0) == "."){
-            chunk = "." + chunk;
-        }
-    }
-
-    // Keeping eye on the last bytes sent, to see if there is a <CR><LF> sequence
-    // at the end which is needed to end the data stream
-    if(chunk.length > 2){
-        this._lastDataBytes = chunk.substr(-2);
-    }else if(chunk.length == 1){
-        this._lastDataBytes = this._lastDataBytes.substr(-1) + chunk;
-    }
-
-    this._log("CLIENT", chunk, true);
-
-    // pass the chunk to the socket
-    return (this.waitDrain = this.socket.send(new TextEncoder("UTF-8").encode(chunk).buffer));
+    // TODO: if the chunk is an arraybuffer, use a separate function to send the data
+    return this._sendString(chunk);
 };
 
 /**
@@ -469,6 +451,35 @@ SMTPClient.prototype._log = function(sender, data, binary){
         }
     }
 };
+
+/**
+ * Sends a string to the socket.
+ *
+ * @param {String} chunk ASCII string (quoted-printable, base64 etc.) to be sent to the server
+ * @return {Boolean} If true, it is safe to send more data, if false, you *should* wait for the ondrain event before sending more
+ */
+SMTPClient.prototype._sendString = function(chunk){
+    // escape dots
+    if(!this.options.disableEscaping){
+        chunk = chunk.replace(/\n\./g, "\n..");
+        if(this._lastDataBytes.substr(-1) == "\n" && chunk.charAt(0) == "."){
+            chunk = "." + chunk;
+        }
+    }
+
+    // Keeping eye on the last bytes sent, to see if there is a <CR><LF> sequence
+    // at the end which is needed to end the data stream
+    if(chunk.length > 2){
+        this._lastDataBytes = chunk.substr(-2);
+    }else if(chunk.length == 1){
+        this._lastDataBytes = this._lastDataBytes.substr(-1) + chunk;
+    }
+
+    this._log("CLIENT", chunk, true);
+
+    // pass the chunk to the socket
+    return (this.waitDrain = this.socket.send(new TextEncoder("UTF-8").encode(chunk).buffer));
+}
 
 /**
  * Send a string command to the server, also append \r\n if needed

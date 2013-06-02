@@ -1,11 +1,18 @@
 
 var MIMEFunctions = {
-/*
+
+    /**
+     * Encodes all non printable and non ascii bytes to =XX form, where XX is the
+     * byte value in hex
+     *
+     * @param {String|Uint8Array} str Either a string or an ArrayBuffer
+     * @param {String} fromCharset Source encoding
+     * @return {String} Mime encoded string
+     */
     mimeEncode: function(str, fromCharset){
-        toCharset = toCharset || "UTF-8";
         fromCharset = fromCharset || "UTF-8";
 
-        var buffer = convert(str || "", toCharset, fromCharset),
+        var buffer = MIMEFunctions.charset.convert(str || "", fromCharset),
             ranges = [[0x09],
                       [0x0A],
                       [0x0D],
@@ -18,42 +25,45 @@ var MIMEFunctions = {
             result = "";
         
         for(var i=0, len = buffer.length; i<len; i++){
-            if(MIMEFunctions._checkRanges(buffer.get(i), ranges)){
-                result += String.fromCharCode(buffer.get(i));
+            if(MIMEFunctions._checkRanges(buffer[i], ranges)){
+                result += String.fromCharCode(buffer[i]);
                 continue;
             }
-            result += "="+(buffer.get(i)<0x10?"0":"")+buffer.get(i).toString(16).toUpperCase();
+            result += "="+(buffer[i] < 0x10 ? "0" : "")+buffer[i].toString(16).toUpperCase();
         }
 
         return result;
     },
 
-    mimeDecode: function(str, toCharset, fromCharset){
+    /**
+     * Decodes mime encoded string to an unicode string
+     *
+     * @param {String} str Mime encoded string
+     * @param {String} fromCharset Source encoding
+     * @return {String} Decoded unicode string
+     */
+    mimeDecode: function(str, fromCharset){
         str = (str || "").toString();
-        toCharset = toCharset || "UTF-8";
         fromCharset = fromCharset || "UTF-8";
 
         var encodedBytesCount = (str.match(/\=[\da-fA-F]{2}/g) || []).length,
             bufferLength = str.length - encodedBytesCount * 2,
             chr, hex,
-            buffer = new Buffer(bufferLength),
+            buffer = new Uint8Array(new ArrayBuffer(bufferLength)),
             bufferPos = 0;
 
         for(var i=0, len = str.length; i<len; i++){
             chr = str.charAt(i);
             if(chr == "=" && (hex = str.substr(i+1, 2)) && /[\da-fA-F]{2}/.test(hex)){
-                buffer.set(bufferPos++, parseInt(hex, 16));
+                buffer[bufferPos++] = parseInt(hex, 16);
                 i+=2;
                 continue;
             }
-            buffer.set(bufferPos++, chr.charCodeAt(0));
+            buffer[bufferPos++] = chr.charCodeAt(0);
         }
 
-        if(fromCharset.toUpperCase().trim() == "BINARY"){
-            return buffer;
-        }
-        return convert(buffer, toCharset, fromCharset);
-    },
+        return MIMEFunctions.charset.decode(buffer, fromCharset);
+    }/*,
 
     encodeBase64: function(str, toCharset, fromCharset){
         var buffer = convert(str || "", toCharset, fromCharset);
@@ -469,6 +479,26 @@ MIMEFunctions.charset = {
     decode: function(arraybuffer, encoding){
         encoding = encoding || "UTF-8";
         return new TextDecoder(encoding).decode(arraybuffer);
+    },
+
+    /**
+     * Convert a string from specifiec encoding to UTF-8 ArrayBuffer
+     *
+     * @param {String|Uint8Array} str String to be encoded
+     * @param {String} fromCharset="UTF-8" Source encoding for the string
+     * @return {Uint8Array} UTF-8 encoded arraybuffer
+     */
+    convert: function(str, fromCharset){
+        fromCharset = fromCharset || "utf-8";
+        var bufString;
+        if(typeof str != "string"){
+            if(fromCharset.match(/^utf[\-_]?8$/)){
+                return str;
+            }
+            bufString = MIMEFunctions.charset.decode(str, fromCharset);
+            return MIMEFunctions.charset.encode(bufString);
+        }
+        return MIMEFunctions.charset.encode(str);
     }
 }
 

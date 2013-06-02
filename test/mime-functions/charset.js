@@ -23,6 +23,15 @@ this.CharsetTests = {
 
         test.deepEqual(str, MIMEFunctions.charset.decode(encoded,encoding));
         test.done();
+    },
+
+    'Convert non utf-8 to arraybuffer': function (test) {
+        var converted = new Uint8Array([0xEC, 0x8B, 0xA0]),
+            encoding = "ks_c_5601-1987",
+            encoded = new Uint8Array([0xBD, 0xC5]);
+
+        test.deepEqual(converted, MIMEFunctions.charset.convert(encoded, encoding));
+        test.done();
     }
 
 }
