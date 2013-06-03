@@ -47,4 +47,4 @@ this.Base64Tests = {
         test.done();
     }
 
-}
+};

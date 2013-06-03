@@ -40,7 +40,7 @@ Include files [smtp-response-parser.js](smtp-client/smtp-response-parser.js) and
 <script src="smtp-client.js"></script>
 ```
 
-Create SMTPClient object with: 
+Create SMTPClient object with:
 
 ```javascript
 var client = new SMTPClient(host, port, options)
@@ -125,8 +125,8 @@ client.onready = function(failedRecipients){
 ### Sending a message
 
 When `onready` event is emitted, it is possible to start sending mail. To do this
-you can send the message with `client.send` calls (you also need to call `client.end()` once 
-the message is completed). 
+you can send the message with `client.send` calls (you also need to call `client.end()` once
+the message is completed).
 
 `send` method returns the state of the downstream buffer - if it returns `true`, it is safe to send more data, otherwise you should (but don't have to) wait for the `ondrain` event before you send more data.
 

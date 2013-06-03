@@ -1,12 +1,29 @@
+// Copyright (c) 2013 Andris Reinman
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 var MIMEFunctions = {
 
     /**
      * Encodes all non printable and non ascii bytes to =XX form, where XX is the
-     * byte value in hex
+     * byte value in hex. This function does not convert linebreaks etc. it
+     * only escapes character sequences
      *
      * @param {String|Uint8Array} str Either a string or an ArrayBuffer
-     * @param {String} fromCharset Source encoding
+     * @param {String} [fromCharset="UTF-8"] Source encoding
      * @return {String} Mime encoded string
      */
     mimeEncode: function(str, fromCharset){
@@ -23,7 +40,7 @@ var MIMEFunctions = {
                       [0x40, 0x5E],
                       [0x60, 0x7E]],
             result = "";
-        
+
         for(var i=0, len = buffer.length; i<len; i++){
             if(MIMEFunctions._checkRanges(buffer[i], ranges)){
                 result += String.fromCharCode(buffer[i]);
@@ -39,7 +56,7 @@ var MIMEFunctions = {
      * Decodes mime encoded string to an unicode string
      *
      * @param {String} str Mime encoded string
-     * @param {String} fromCharset Source encoding
+     * @param {String} [fromCharset="UTF-8"] Source encoding
      * @return {String} Decoded unicode string
      */
     mimeDecode: function(str, fromCharset){
@@ -63,81 +80,179 @@ var MIMEFunctions = {
         }
 
         return MIMEFunctions.charset.decode(buffer, fromCharset);
-    }/*,
-
-    encodeBase64: function(str, toCharset, fromCharset){
-        var buffer = convert(str || "", toCharset, fromCharset);
-        return MIMEFunctions._addSoftLinebreaks(buffer.toString("base64"), "base64");
     },
 
-    decodeBase64: function(str, toCharset, fromCharset){
-        var buffer = new Buffer((str || "").toString(), "base64");
-        return convert(buffer, toCharset, fromCharset);
+    /**
+     * Encodes a string or an arraybuffer of given charset into unicode
+     * base64 string. Also adds line breaks
+     *
+     * @param {String|Uint8Array} str String to be base64 encoded
+     * @param {String} [fromCharset="UTF-8"]
+     * @return {String} Base64 encoded string
+     */
+    base64Encode: function(str, fromCharset){
+        var buf = MIMEFunctions.charset.convert(str || "", fromCharset),
+            b64 = MIMEFunctions.base64.encode(buf);
+        return MIMEFunctions._addSoftLinebreaks(b64, "base64");
     },
 
-    decodeQuotedPrintable: function(str, toCharset, fromCharset){
-        str = (str || "").toString();
-        str = str.replace(/\=(?:\r?\n|$)/g, "");
-        return MIMEFunctions.mimeDecode(str, toCharset, fromCharset);
+    /**
+     * Decodes a base64 string of any charset into an unicode string
+     *
+     * @param {String} str Base64 encoded string
+     * @param {String} [fromCharset="UTF-8"] Original charset of the base64 encoded string
+     * @return {String} Decoded unicode string
+     */
+    base64Decode: function(str, fromCharset){
+        var buf = MIMEFunctions.base64.decode(str ||"", "arraybuffer");
+        return MIMEFunctions.charset.decode(buf, fromCharset);
     },
 
-    encodeQuotedPrintable: function(str, toCharset, fromCharset){
-        var mimeEncodedStr = MIMEFunctions.mimeEncode(str, toCharset, fromCharset);
+    /**
+     * Encodes a string or an arraybuffer into a quoted printable encoding
+     * This is almost the same as mimeEncode, except line breaks will be changed
+     * as well to ensure that the lines are never longer than allowed length
+     *
+     * @param {String|Uint8Array} str String or an arraybuffer to mime encode
+     * @param {String} [fromCharset="UTF-8"] Original charset of the string
+     * @return {String} Mime encoded string
+     */
+    quotedPrintableEncode: function(str, fromCharset){
+        var mimeEncodedStr = MIMEFunctions.mimeEncode(str, fromCharset);
 
-        // fix line breaks
-        mimeEncodedStr = mimeEncodedStr.replace(/\r?\n|\r/g, function(lineBreak, spaces){
-            return "\r\n";
-        }).replace(/[\t ]+$/gm, function(spaces){
-            return spaces.replace(/ /g, "=20").replace(/\t/g, "=09");
-        });
+        mimeEncodedStr = mimeEncodedStr.
+            // fix line breaks, ensure <CR><LF>
+            replace(/\r?\n|\r/g, function(lineBreak, spaces){
+                return "\r\n";
+            }).
+            // replace spaces in the end of lines
+            replace(/[\t ]+$/gm, function(spaces){
+                return spaces.replace(/ /g, "=20").replace(/\t/g, "=09");
+            });
 
+        // add soft line breaks to ensure line lengths sjorter than 76 bytes
         return MIMEFunctions._addSoftLinebreaks(mimeEncodedStr, "qp");
     },
 
-    encodeMimeWord: function(str, encoding, maxLength, toCharset, fromCharset){
-        toCharset = (toCharset || "utf-8").toString().toUpperCase().trim();
-        encoding = (encoding || "Q").toString().toUpperCase().trim().charAt(0);
-        var encodedStr;
+    /**
+     * Decodes a string from a quoted printable encoding. This is almost the
+     * same as mimeDecode, except line breaks will be changed as well
+     *
+     * @param {String} str Mime encoded string to decode
+     * @param {String} [fromCharset="UTF-8"] Original charset of the string
+     * @return {String} Mime decoded string
+     */
+    quotedPrintableDecode: function(str, fromCharset){
+        str = (str || "").toString();
+
+        // remove soft line breaks
+        str = str.replace(/\=(?:\r?\n|$)/g, "");
+        return MIMEFunctions.mimeDecode(str, fromCharset);
+    },
+
+    /**
+     * Encodes a string to an UTF-8 MIME Word (rfc2047)
+     *
+     * @param {String|Uint8Array} str String to be encoded
+     * @param {String} mimeWordEncoding="Q" Encoding for the mime word, either Q or B
+     * @param {Number} [maxLength=0] If set, split mime words into several chunks if needed
+     * @param {String} [fromCharset="UTF-8"] Source sharacter set
+     * @return {String} Single or several mime words joined together
+     */
+    mimeWordEncode: function(str, mimeWordEncoding, maxLength, fromCharset){
+        mimeWordEncoding = (mimeWordEncoding || "Q").toString().toUpperCase().trim().charAt(0);
+
+        if(!fromCharset && typeof maxLength == "string" && !maxLength.match(/^[0-9]+$/)){
+            fromCharset = maxLength;
+            maxLength = undefined;
+        }
+
+        maxLength = maxLength || 0;
+
+        var encodedStr,
+            toCharset = "UTF-8",
+            i, len, parts;
 
         if(maxLength && maxLength > 7 + toCharset.length){
             maxLength -= (7 + toCharset.length);
         }
 
-        if(encoding == "Q"){
-            encodedStr = MIMEFunctions.mimeEncode(str, toCharset, fromCharset);
+        if(mimeWordEncoding == "Q"){
+            encodedStr = MIMEFunctions.mimeEncode(str, fromCharset);
             encodedStr = encodedStr.replace(/[\r\n\t_]/g, function(chr){
                 var code = chr.charCodeAt(0);
                 return "=" + (code<0x10?"0":"") + code.toString(16).toUpperCase();
             }).replace(/\s/g, "_");
-        }else if(encoding == "B"){
-            encodedStr = convert(str || "", toCharset, fromCharset).toString("base64").trim();
+        }else if(mimeWordEncoding == "B"){
+            encodedStr = typeof str == "string" ? str : MIMEFunctions.decode(str, fromCharset);
+            maxLength = Math.max(3, (maxLength - maxLength % 4) / 4 * 3);
         }
 
         if(maxLength && encodedStr.length > maxLength){
-            if(encoding == "Q"){
-                encodedStr = MIMEFunctions.splitEncodedString(encodedStr, maxLength).join("?= =?"+toCharset+"?"+encoding+"?");
+            if(mimeWordEncoding == "Q"){
+                encodedStr = MIMEFunctions._splitMimeEncodedString(encodedStr, maxLength).join("?= =?"+toCharset+"?"+mimeWordEncoding+"?");
             }else{
-                encodedStr = encodedStr.replace(new RegExp(".{"+maxLength+"}","g"),"$&?= =?"+toCharset+"?"+encoding+"?");
-                if(encodedStr.substr(-(" =?"+toCharset+"?"+encoding+"?=").length) == " =?"+toCharset+"?"+encoding+"?="){
-                    encodedStr = encodedStr.substr(0, encodedStr.length -(" =?"+toCharset+"?"+encoding+"?=").length);
+
+                // RFC2047 6.3 (2) states that encoded-word must include an integral number of characters, so no chopping unicode sequences
+                parts = [];
+                for(i=0, len = encodedStr.length; i<len; i += maxLength){
+                    parts.push(MIMEFunctions.base64.encode(encodedStr.substr(i, maxLength)));
                 }
-                if(encodedStr.substr(-(" =?"+toCharset+"?"+encoding+"?").length) == " =?"+toCharset+"?"+encoding+"?"){
-                    encodedStr = encodedStr.substr(0, encodedStr.length -(" =?"+toCharset+"?"+encoding+"?").length);
+
+                if(parts.length > 1){
+                    return "=?"+toCharset+"?"+mimeWordEncoding+"?"+ parts.join("?= =?"+toCharset+"?"+mimeWordEncoding+"?") + "?=";
+                }else{
+                    encodedStr = parts.join("");
                 }
             }
+        }else if(mimeWordEncoding == "B"){
+            encodedStr = MIMEFunctions.base64.encode(encodedStr);
         }
 
-        return "=?"+toCharset+"?"+encoding+"?"+encodedStr+ (encodedStr.substr(-2)=="?="?"":"?=");
+        return "=?"+toCharset+"?"+mimeWordEncoding+"?"+encodedStr+ (encodedStr.substr(-2)=="?="?"":"?=");
     },
 
-    decodeMimeWord: function(str, toCharset){
+    /**
+     * Finds word sequences with non ascii text and converts these to mime words
+     *
+     * @param {String|Uint8Array} str String to be encoded
+     * @param {String} mimeWordEncoding="Q" Encoding for the mime word, either Q or B
+     * @param {Number} [maxLength=0] If set, split mime words into several chunks if needed
+     * @param {String} [fromCharset="UTF-8"] Source sharacter set
+     * @return {String} String with possible mime words
+     */
+    mimeWordsEncode: function(str, mimeWordEncoding, maxLength, fromCharset){
+        if(!fromCharset && typeof maxLength == "string" && !maxLength.match(/^[0-9]+$/)){
+            fromCharset = maxLength;
+            maxLength = undefined;
+        }
+
+        maxLength = maxLength || 0;
+
+        var decodedValue = MIMEFunctions.charset.decode(MIMEFunctions.charset.convert((str || ""), fromCharset)),
+            encodedValue;
+
+        encodedValue = decodedValue.replace(/([^\s\u0080-\uFFFF]*[\u0080-\uFFFF]+[^\s\u0080-\uFFFF]*(?:\s+[^\s\u0080-\uFFFF]*[\u0080-\uFFFF]+[^\s\u0080-\uFFFF]*\s*)?)+/g, function(match){
+            return match.length ? MIMEFunctions.mimeWordEncode(match, mimeWordEncoding || "Q", maxLength) : "";
+        });
+
+        return encodedValue;
+    },
+
+    /**
+     * Decode a complete mime word encoded string
+     *
+     * @param {String} str Mime word encoded string
+     * @return {String} Decoded unicode string
+     */
+    mimeWordDecode: function(str){
         str = (str || "").toString().trim();
 
         var fromCharset, encoding, match;
 
         match = str.match(/^\=\?([\w_\-]+)\?([QqBb])\?([^\?]+)\?\=$/i);
         if(!match){
-            return convert(str, toCharset);
+            return str;
         }
 
         fromCharset = match[1];
@@ -145,37 +260,47 @@ var MIMEFunctions = {
         str = (match[3] || "").replace(/_/g, " ");
 
         if(encoding == "B"){
-            return MIMEFunctions.decodeBase64(str, toCharset, fromCharset);
+            return MIMEFunctions.base64Decode(str, fromCharset);
         }else if(encoding == "Q"){
-            return MIMEFunctions.mimeDecode(str, toCharset, fromCharset);    
+            return MIMEFunctions.mimeDecode(str, fromCharset);
         }else{
             return str;
         }
 
     },
 
-    decodeMimeWords: function(str, toCharset){
-        var remainder = "", lastCharset, curCharset;
+    /**
+     * Decode a string that might include one or several mime words
+     *
+     * @param {String} str String including some mime words that will be encoded
+     * @return {String} Decoded unicode string
+     */
+    mimeWordsDecode: function(str){
         str = (str || "").toString();
-
         str = str.
-                replace(/(=\?[^?]+\?[QqBb]\?[^?]+\?=)\s+(?==\?[^?]+\?[QqBb]\?[^?]+\?=)/g, "$1").
-                replace(/\=\?([\w_\-]+)\?([QqBb])\?[^\?]+\?\=/g, (function(mimeWord, charset, encoding){
+            replace(/(=\?[^?]+\?[QqBb]\?[^?]+\?=)\s+(?==\?[^?]+\?[QqBb]\?[^?]+\?=)/g, "$1").
+            replace(/\=\?([\w_\-]+)\?([QqBb])\?[^\?]+\?\=/g, function(mimeWord, charset, encoding){
+                return MIMEFunctions.mimeWordDecode(mimeWord);
+            });
 
-                      curCharset = charset + encoding;
-
-                      return MIMEFunctions.decodeMimeWord(mimeWord);
-                  }).bind(MIMEFunctions.);
-
-        return convert(str, toCharset);
+        return str;
     },
 
-    foldLine: function(str, lineLengthMax, afterSpace, lineMargin){
-        lineLengthMax = lineLengthMax || 76;
-        lineMargin = lineMargin || Math.floor(lineLengthMax/5);
+    /**
+     * Folds long lines, useful for folding header lines (afterSpace=false) and
+     * flowed text (afterSpace=true)
+     *
+     * @param {String} str String to be folded
+     * @param {Number} [lineLengthMax=76] Maximum length of a line
+     * @param {Boolean} afterSpace If true, leave a space in th end of a line
+     * @return {String} String with folded lines
+     */
+    foldLines: function(str, lineLengthMax, afterSpace){
         str = (str || "").toString().trim();
+        lineLengthMax = lineLengthMax || 76;
 
-        var pos = 0, len = str.length, result = "", line, match;
+        var pos = 0, len = str.length, result = "", line, match,
+            lineMargin = Math.floor(lineLengthMax - lineLengthMax/2);
 
         while(pos < len){
             line = str.substr(pos, lineLengthMax);
@@ -203,70 +328,23 @@ var MIMEFunctions = {
         return result;
     },
 
-    encodeMimeWords: function(value, encoding, maxLength, toCharset, fromCharset){
-        var decodedValue = convert((value || ""), "utf-8", fromCharset).toString("utf-8"),
-            encodedValue;
-
-        encodedValue = decodedValue.replace(/([^\s\u0080-\uFFFF]*[\u0080-\uFFFF]+[^\s\u0080-\uFFFF]*(?:\s+[^\s\u0080-\uFFFF]*[\u0080-\uFFFF]+[^\s\u0080-\uFFFF]*\s*)?)+/g, (function(str, o){
-            return str.length?MIMEFunctions.encodeMimeWord(str, encoding || "Q", maxLength, toCharset):"";
-        }).bind(MIMEFunctions.);
-
-        return encodedValue;
-    },
-
-    encodeHeaderLine: function(key, value, toCharset, fromCharset){
-        var encodedValue = MIMEFunctions.encodeMimeWords(value, 52, toCharset, fromCharset);
-        return MIMEFunctions.foldLine(key+": "+encodedValue, 76);
-    },
-
-    parseHeaderLines: function(headers, toCharset){
-        var lines = headers.split(/\r?\n|\r/),
-            headersObj = {},
-            key, value,
-            header,
-            i, len;
-
-        for(i=lines.length-1; i>=0; i--){
-            if(i && lines[i].match(/^\s/)){
-                lines[i-1] += "\r\n" + lines[i];
-                lines.splice(i, 1);
-            }
-        }
-
-        for(i=0, len = lines.length; i<len; i++){
-            header = MIMEFunctions.decodeHeaderLine(lines[i]);
-            key = (header[0] || "").toString().toLowerCase().trim();
-            value = header[1] || "";
-            if(!toCharset || (toCharset || "").toString().trim().match(/^utf[\-_]?8$/i)){
-                value = value.toString("utf-8");
-            }
-            if(!headersObj[key]){
-                headersObj[key] = [value];
-            }else{
-                headersObj[key].push(value);
-            }
-        }
-
-        return headersObj;
-    },
-
-    decodeHeaderLine: function(header, toCharset){
-        var line = (header || "").toString().replace(/(?:\r?\n|\r)[ \t]*$/g, " ").trim(),
-            match = line.match(/^\s*([^:]+):(.*)$/),
-            key = (match && match[1] || "").trim(),
-            value = (match && match[2] || "").trim();
-
-        value = MIMEFunctions.decodeMimeWords(value, toCharset);
-        return [key, value];
-    },
-
-    splitEncodedString: function(str, maxlen){
+    /**
+     * Splits a mime encoded string. Needed for dividing mime words into smaller chunks
+     *
+     * @param {String} str Mime encoded string to be split up
+     * @param {Number} maxlen Maximum length of characters for one part (minimum 12)
+     * @return {Array} Split string
+     */
+    _splitMimeEncodedString: function(str, maxlen){
         var curLine, match, chr, done,
             lines = [];
 
+        // require at least 12 symbols to fit possible 4 octet UTF-8 sequences
+        maxlen = Math.max(maxlen || 0, 12);
+
         while(str.length){
             curLine = str.substr(0, maxlen);
-            
+
             // move incomplete escaped char back to main
             if((match = curLine.match(/\=[0-9A-F]?$/i))){
                 curLine = curLine.substr(0, match.index);
@@ -295,161 +373,220 @@ var MIMEFunctions = {
         return lines;
     },
 
-    parseAddresses: MIMEAddressParser.parse
-*/
-};
+    /**
+     * Adds soft line breaks (the ones that will be stripped out when decoding) to
+     * ensure that no line in the message is never longer than 76 symbols
+     *
+     * Lines can't be longer than 76 + <CR><LF> = 78 bytes
+     * http://tools.ietf.org/html/rfc2045#section-6.7
+     *
+     * @param {String} str Encoded string
+     * @param {String} encoding Either "qp" or "base64" (the default)
+     * @return {String} String with forced line breaks
+     */
+    _addSoftLinebreaks: function(str, encoding){
+        var lineLengthMax = 76;
 
-/*
+        encoding = (encoding || "base64").toString().toLowerCase().trim();
 
-
-
-*/
-
-/**
- * Adds soft line breaks (the ones that will be stripped out when decoding) to
- * ensure that no line in the message is never longer than 76 symbols
- *
- * Lines can't be longer than 76 + <CR><LF> = 78 bytes
- * http://tools.ietf.org/html/rfc2045#section-6.7
- *
- * @param {String} str Encoded string
- * @param {String} encoding Either "qp" or "base64" (the default)
- * @return {String} String with forced line breaks
- */
-MIMEFunctions._addSoftLinebreaks = function(str, encoding){
-    var lineLengthMax = 76;
-
-    encoding = (encoding || "base64").toString().toLowerCase().trim();
-    
-    if(encoding == "qp"){
-        return MIMEFunctions._addQPSoftLinebreaks(str, lineLengthMax);
-    }else{
-        return MIMEFunctions._addBase64SoftLinebreaks(str, lineLengthMax);
-    }
-}
-
-/**
- * Adds soft line breaks (the ones that will be stripped out when decoding base64) to
- * ensure that no line in the message is never longer than lineLengthMax
- *
- * @param {String} base64EncodedStr String in BASE64 encoding
- * @param {Number} lineLengthMax Maximum length of a line
- * @return {String} String with forced line breaks
- */
-MIMEFunctions._addBase64SoftLinebreaks = function(base64EncodedStr, lineLengthMax){
-    base64EncodedStr = (base64EncodedStr || "").toString().trim();
-    return base64EncodedStr.replace(new RegExp(".{" +lineLengthMax+ "}", "g"),"$&\r\n").trim();
-}
-
-/**
- * Adds soft line breaks (the ones that will be stripped out when decoding QP) to
- * ensure that no line in the message is never longer than lineLengthMax
- *
- * Not sure of how and why this works, but at least it seems to be working :/
- *
- * @param {String} qpEncodedStr String in Quoted-Printable encoding
- * @param {Number} lineLengthMax Maximum length of a line
- * @return {String} String with forced line breaks
- */
-MIMEFunctions._addQPSoftLinebreaks = function(qpEncodedStr, lineLengthMax){
-    qpEncodedStr = (qpEncodedStr || "").toString()
-
-    var pos = 0, len = qpEncodedStr.length, 
-        match, code, line, 
-        lineMargin = Math.floor(lineLengthMax/3), 
-        result = "";
-
-    // insert soft linebreaks where needed
-    while(pos < len){
-        line = qpEncodedStr.substr(pos, lineLengthMax);
-        if((match = line.match(/\r\n/))){
-            line = line.substr(0, match.index + match[0].length);
-            result += line;
-            pos += line.length;
-            continue;
-        }
-
-        if(line.substr(-1)=="\n"){
-            // nothing to change here
-            result += line;
-            pos += line.length;
-            continue;
-        }else if((match = line.substr(-lineMargin).match(/\n.*?$/))){
-            // truncate to nearest line break
-            line = line.substr(0, line.length - (match[0].length - 1));
-            result += line;
-            pos += line.length;
-            continue;
-        }else if(line.length > lineLengthMax - lineMargin && (match = line.substr(-lineMargin).match(/[ \t\.,!\?][^ \t\.,!\?]*$/))){
-            // truncate to nearest space
-            line = line.substr(0, line.length - (match[0].length - 1));
-        }else if(line.substr(-1)=="\r"){
-            line = line.substr(0, line.length-1);
+        if(encoding == "qp"){
+            return MIMEFunctions._addQPSoftLinebreaks(str, lineLengthMax);
         }else{
-            if(line.match(/\=[\da-f]{0,2}$/i)){
-
-                // push incomplete encoding sequences to the next line
-                if((match = line.match(/\=[\da-f]{0,1}$/i))){
-                    line = line.substr(0, line.length - match[0].length);
-                }
-
-                // ensure that utf-8 sequences are not split
-                while(line.length>3 && line.length < len - pos && !line.match(/^(?:=[\da-f]{2}){1,4}$/i) && (match = line.match(/\=[\da-f]{2}$/ig))){
-                    code = parseInt(match[0].substr(1,2), 16);
-                    if(code<128){
-                        break;
-                    }
-
-                    line = line.substr(0, line.length-3);
-
-                    if(code >=0xC0){
-                        break;
-                    }
-                }
-                
-            }
+            return MIMEFunctions._addBase64SoftLinebreaks(str, lineLengthMax);
         }
-        
-        if(pos + line.length < len && line.substr(-1)!="\n"){
-            if(line.length==76 && line.match(/\=[\da-f]{2}$/i)){
-                line = line.substr(0, line.length-3);
+    },
+
+    /**
+     * Adds soft line breaks (the ones that will be stripped out when decoding base64) to
+     * ensure that no line in the message is never longer than lineLengthMax
+     *
+     * @param {String} base64EncodedStr String in BASE64 encoding
+     * @param {Number} lineLengthMax Maximum length of a line
+     * @return {String} String with forced line breaks
+     */
+    _addBase64SoftLinebreaks: function(base64EncodedStr, lineLengthMax){
+        base64EncodedStr = (base64EncodedStr || "").toString().trim();
+        return base64EncodedStr.replace(new RegExp(".{" +lineLengthMax+ "}", "g"),"$&\r\n").trim();
+    },
+
+    /**
+     * Adds soft line breaks (the ones that will be stripped out when decoding QP) to
+     * ensure that no line in the message is never longer than lineLengthMax
+     *
+     * Not sure of how and why this works, but at least it seems to be working :/
+     *
+     * @param {String} qpEncodedStr String in Quoted-Printable encoding
+     * @param {Number} lineLengthMax Maximum length of a line
+     * @return {String} String with forced line breaks
+     */
+    _addQPSoftLinebreaks: function(qpEncodedStr, lineLengthMax){
+        qpEncodedStr = (qpEncodedStr || "").toString();
+
+        var pos = 0, len = qpEncodedStr.length,
+            match, code, line,
+            lineMargin = Math.floor(lineLengthMax/3),
+            result = "";
+
+        // insert soft linebreaks where needed
+        while(pos < len){
+            line = qpEncodedStr.substr(pos, lineLengthMax);
+            if((match = line.match(/\r\n/))){
+                line = line.substr(0, match.index + match[0].length);
+                result += line;
+                pos += line.length;
+                continue;
             }
-            else if(line.length==76){
+
+            if(line.substr(-1)=="\n"){
+                // nothing to change here
+                result += line;
+                pos += line.length;
+                continue;
+            }else if((match = line.substr(-lineMargin).match(/\n.*?$/))){
+                // truncate to nearest line break
+                line = line.substr(0, line.length - (match[0].length - 1));
+                result += line;
+                pos += line.length;
+                continue;
+            }else if(line.length > lineLengthMax - lineMargin && (match = line.substr(-lineMargin).match(/[ \t\.,!\?][^ \t\.,!\?]*$/))){
+                // truncate to nearest space
+                line = line.substr(0, line.length - (match[0].length - 1));
+            }else if(line.substr(-1)=="\r"){
                 line = line.substr(0, line.length-1);
+            }else{
+                if(line.match(/\=[\da-f]{0,2}$/i)){
+
+                    // push incomplete encoding sequences to the next line
+                    if((match = line.match(/\=[\da-f]{0,1}$/i))){
+                        line = line.substr(0, line.length - match[0].length);
+                    }
+
+                    // ensure that utf-8 sequences are not split
+                    while(line.length>3 && line.length < len - pos && !line.match(/^(?:=[\da-f]{2}){1,4}$/i) && (match = line.match(/\=[\da-f]{2}$/ig))){
+                        code = parseInt(match[0].substr(1,2), 16);
+                        if(code<128){
+                            break;
+                        }
+
+                        line = line.substr(0, line.length-3);
+
+                        if(code >=0xC0){
+                            break;
+                        }
+                    }
+
+                }
             }
-            pos += line.length;
-            line += "=\r\n";
-        }else{
-            pos += line.length;
-        }
-        
-        result += line;
-    }
 
-    return result;
-}
+            if(pos + line.length < len && line.substr(-1)!="\n"){
+                if(line.length==76 && line.match(/\=[\da-f]{2}$/i)){
+                    line = line.substr(0, line.length-3);
+                }
+                else if(line.length==76){
+                    line = line.substr(0, line.length-1);
+                }
+                pos += line.length;
+                line += "=\r\n";
+            }else{
+                pos += line.length;
+            }
 
-/**
- * Checks if a number is in specified ranges or not
- *
- * @param {Number} nr Number to check for
- * @ranges {Array} ranges Array of range duples
- * @return {Boolean} Returns true, if nr was found to be at least one of the specified ranges
- */
-MIMEFunctions._checkRanges = function(nr, ranges){
-    for(var i = ranges.length - 1; i >= 0; i--){
-        if(!ranges[i].length){
-            continue;
+            result += line;
         }
-        if(ranges[i].length == 1 && nr == ranges[i][0]){
-            return true;
+
+        return result;
+    },
+
+    /**
+     * Checks if a number is in specified ranges or not
+     *
+     * @param {Number} nr Number to check for
+     * @ranges {Array} ranges Array of range duples
+     * @return {Boolean} Returns true, if nr was found to be at least one of the specified ranges
+     */
+    _checkRanges: function(nr, ranges){
+        for(var i = ranges.length - 1; i >= 0; i--){
+            if(!ranges[i].length){
+                continue;
+            }
+            if(ranges[i].length == 1 && nr == ranges[i][0]){
+                return true;
+            }
+            if(ranges[i].length == 2 && nr >= ranges[i][0] && nr <= ranges[i][1]){
+                return true;
+            }
         }
-        if(ranges[i].length == 2 && nr >= ranges[i][0] && nr <= ranges[i][1]){
-            return true;
+        return false;
+    },
+
+    /**
+     * Encodes and folds a header line for a MIME message.
+     * Shorthand for mimeWordsEncode + foldLines
+     *
+     * @param {String} key Key name, will not be encoded
+     * @param {String|Uint8Array} value Value to be encoded
+     * @param {String} [fromCharset="UTF-8"] Character set of the value
+     * @return {String} encoded and folded header line
+     */
+    headerLineEncode: function(key, value, fromCharset){
+        var encodedValue = MIMEFunctions.mimeWordsEncode(value, "Q", 52, fromCharset);
+        return MIMEFunctions.foldLines(key+": "+encodedValue, 76);
+    },
+
+    /**
+     * Parses a block of header lines. Does not decode mime words as every
+     * header might have its own rules (eg. formatted email addresses and such)
+     *
+     * @param {String} headers Headers string
+     * @return {Object} An object of headers, where header keys are object keys. NB! Several values with the same key make up an Array
+     */
+    headerLinesDecode: function(headers){
+        var lines = headers.split(/\r?\n|\r/),
+            headersObj = {},
+            key, value,
+            header,
+            i, len;
+
+        for(i = lines.length-1; i >= 0; i--){
+            if(i && lines[i].match(/^\s/)){
+                lines[i-1] += "\r\n" + lines[i];
+                lines.splice(i, 1);
+            }
         }
+
+        for(i=0, len = lines.length; i<len; i++){
+            header = MIMEFunctions.headerLineDecode(lines[i]);
+            key = (header.key || "").toString().toLowerCase().trim();
+            value = header.value || "";
+
+            if(!headersObj[key]){
+                headersObj[key] = value;
+            }else{
+
+                headersObj[key] = [].concat(headersObj[key], value);
+            }
+        }
+
+        return headersObj;
+    },
+
+    /**
+     * Splits a string by :
+     * The result is not mime word decoded, you need to do your own decoding based
+     * on the rules for the specific header key
+     *
+     * @param {String} header Single header line, might include linebreaks as well if folded
+     * @return {Object} And object of {key, value}
+     */
+    headerLineDecode: function(header){
+        var line = (header || "").toString().replace(/(?:\r?\n|\r)[ \t]*/g, " ").trim(),
+            match = line.match(/^\s*([^:]+):(.*)$/),
+            key = (match && match[1] || "").trim(),
+            value = (match && match[2] || "").trim();
+
+        return {key: key, value: value};
     }
-    return false;
-}
+};
 
 /**
  * Character set encoding and decoding functions
@@ -473,23 +610,23 @@ MIMEFunctions.charset = {
      * Decodes a string from arraybuffer to an unicode string using specified encoding
      *
      * @param {Uint8Array} arraybuffer Binary data to be decoded
-     * @param {String} encoding="UTF-8" Binary data is decoded into string using this charset
+     * @param {String} [fromCharset="UTF-8"] Binary data is decoded into string using this charset
      * @return {String} Decded string
      */
-    decode: function(arraybuffer, encoding){
-        encoding = encoding || "UTF-8";
-        return new TextDecoder(encoding).decode(arraybuffer);
+    decode: function(arraybuffer, fromCharset){
+        fromCharset = MIMEFunctions.charset._normalizeCharset(fromCharset ||"UTF-8");
+        return new TextDecoder(fromCharset).decode(arraybuffer);
     },
 
     /**
      * Convert a string from specifiec encoding to UTF-8 ArrayBuffer
      *
      * @param {String|Uint8Array} str String to be encoded
-     * @param {String} fromCharset="UTF-8" Source encoding for the string
+     * @param {String} [fromCharset="UTF-8"] Source encoding for the string
      * @return {Uint8Array} UTF-8 encoded arraybuffer
      */
     convert: function(str, fromCharset){
-        fromCharset = fromCharset || "utf-8";
+        fromCharset = MIMEFunctions.charset._normalizeCharset(fromCharset || "UTF-8");
         var bufString;
         if(typeof str != "string"){
             if(fromCharset.match(/^utf[\-_]?8$/)){
@@ -499,8 +636,33 @@ MIMEFunctions.charset = {
             return MIMEFunctions.charset.encode(bufString);
         }
         return MIMEFunctions.charset.encode(str);
+    },
+
+    /**
+     * Converts well known invalid character set names to proper names.
+     * eg. win-1257 will be converted to WINDOWS-1257
+     *
+     * @param {String} charset Charset name to convert
+     * @return {String} Canoninicalized charset name
+     */
+    _normalizeCharset: function(charset){
+        var match;
+
+        if((match = charset.match(/^utf[\-_]?(\d+)$/i))){
+            return "UTF-" + match[1];
+        }
+
+        if((match = charset.match(/^win[\-_]?(\d+)$/i))){
+            return "WINDOWS-" + match[1];
+        }
+
+        if((match = charset.match(/^latin[\-_]?(\d+)$/i))){
+            return "ISO-8859-" + match[1];
+        }
+
+        return charset;
     }
-}
+};
 
 /**
  * Base64 encoding and decoding functions
@@ -526,7 +688,7 @@ MIMEFunctions.base64 = {
 
         var len = data.byteLength,
             binStr="";
-        
+
         for(var i = 0; i < len; i++){
             binStr += String.fromCharCode(data[i]);
         }
@@ -549,7 +711,7 @@ MIMEFunctions.base64 = {
 
         outputEncoding = (outputEncoding || "arraybuffer").toLowerCase().trim();
 
-        var binStr, len, buf;
+        var binStr, i, len, buf;
 
         if(outputEncoding == "string"){
             // window.atob uses pseudo binary encoding, so unicode strings
@@ -565,5 +727,5 @@ MIMEFunctions.base64 = {
             return buf;
         }
     }
-}
+};
 

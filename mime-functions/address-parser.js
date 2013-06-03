@@ -22,7 +22,7 @@ var MIMEAddressParser = {};
 
 /**
  * Parses structured e-mail addresses from an address field
- * 
+ *
  * Example:
  *
  *    "Name <address@domain>"
@@ -88,7 +88,7 @@ MIMEAddressParser._handleAddress = function(tokens){
     // Filter out <addresses>, (comments) and regular text
     for(i=0, len = tokens.length; i<len; i++){
         token = tokens[i];
-        
+
         if(token.type == "operator"){
             switch(token.value){
                 case "<":
@@ -118,7 +118,7 @@ MIMEAddressParser._handleAddress = function(tokens){
     }
 
     if(data.group.length){
-        
+
         if(data.text.length){
             data.text = data.text.join(" ");
         }
@@ -154,7 +154,7 @@ MIMEAddressParser._handleAddress = function(tokens){
                     if(data.address.length){
                         break;
                     }
-                }                
+                }
             }
         }
 
@@ -162,7 +162,7 @@ MIMEAddressParser._handleAddress = function(tokens){
         if(!data.text.length && data.comment.length){
             data.text = data.comment;
             data.comment = [];
-        }  
+        }
 
         // Keep only the first address occurence, push others to regular text
         if(data.address.length > 1){
@@ -187,7 +187,7 @@ MIMEAddressParser._handleAddress = function(tokens){
                 }else{
                     address.address = "";
                 }
-                
+
             }
 
             addresses.push(address);

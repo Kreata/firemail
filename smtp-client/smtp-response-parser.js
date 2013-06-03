@@ -100,7 +100,7 @@ SMTPResponseParser.prototype.end = function(chunk){
  */
 SMTPResponseParser.prototype._processLine = function(line){
     var match, response;
-    
+
     // possible input strings for the regex:
     // 250-MESSAGE
     // 250 MESSAGE
@@ -114,12 +114,12 @@ SMTPResponseParser.prototype._processLine = function(line){
     this._block.lines.push(line);
 
     if((match = line.match(/^(\d{3})([\- ])(?:(\d+\.\d+\.\d+)(?: ))?(.*)/))){
-        
+
         this._block.data.push(match[4]);
-        
+
         if(match[2] == "-"){
             if(this._block.statusCode && this._block.statusCode != Number(match[1])){
-                this.onerror("Invalid status code " + match[1] + 
+                this.onerror("Invalid status code " + match[1] +
                     " for multi line response (" + this._block.statusCode + " expected)");
             }else if(!this._block.statusCode){
                 this._block.statusCode = Number(match[1]);
@@ -127,8 +127,8 @@ SMTPResponseParser.prototype._processLine = function(line){
             return;
         }else{
             response = {
-                statusCode: Number(match[1]) || 0, 
-                enhancedStatus: match[3] || null, 
+                statusCode: Number(match[1]) || 0,
+                enhancedStatus: match[3] || null,
                 data: this._block.data.join("\n"),
                 line: this._block.lines.join("\n")
             };
@@ -142,8 +142,8 @@ SMTPResponseParser.prototype._processLine = function(line){
         this.onerror(new Error("Invalid SMTP response \"" + line + "\""));
         this.ondata({
             success: false,
-            statusCode: this._block.statusCode || null, 
-            enhancedStatus: null, 
+            statusCode: this._block.statusCode || null,
+            enhancedStatus: null,
             data: [line].join("\n"),
             line: this._block.lines.join("\n")
         });

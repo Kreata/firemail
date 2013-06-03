@@ -1,11 +1,11 @@
 this.SMTPResponseParserTests= {
-    
+
     'Create SMTPResponseParser object': function (test) {
         var parser = new SMTPResponseParser();
         test.ok(true, parser instanceof SMTPResponseParser);
         test.done();
     },
-    
+
     'Write data to parser': function (test) {
         var parser = new SMTPResponseParser();
         parser.send("test");
@@ -19,14 +19,14 @@ this.SMTPResponseParserTests= {
         var line = "250 1.2.3 test",
             response = {
                 success: true,
-                statusCode: 250, 
-                enhancedStatus: "1.2.3", 
-                data: "test", 
+                statusCode: 250,
+                enhancedStatus: "1.2.3",
+                data: "test",
                 line: line
             }, i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             if(i++){
                 test.ok(false, "Should not run more than once");
@@ -52,14 +52,14 @@ this.SMTPResponseParserTests= {
         var line = "250 1.2.3 test",
             response = {
                 success: true,
-                statusCode: 250, 
-                enhancedStatus: "1.2.3", 
-                data: "test", 
+                statusCode: 250,
+                enhancedStatus: "1.2.3",
+                data: "test",
                 line: line
             }, i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             if(i++){
                 test.ok(false, "Should not run more than once");
@@ -86,24 +86,24 @@ this.SMTPResponseParserTests= {
             i = 0,
             responses = [{
                 success: true,
-                statusCode: 250, 
-                enhancedStatus: "1.2.3", 
-                data: "test", 
+                statusCode: 250,
+                enhancedStatus: "1.2.3",
+                data: "test",
                 line: lines[0]
             },{
                 success:true,
-                statusCode: 252, 
-                enhancedStatus: null, 
-                data: "pest", 
+                statusCode: 252,
+                enhancedStatus: null,
+                data: "pest",
                 line: lines[1]
             }];
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             test.deepEqual(data, responses[i++]);
         };
-        
+
         parser.onend = function(){
             test.done();
         };
@@ -118,14 +118,14 @@ this.SMTPResponseParserTests= {
         var lines = ["250-test1", "250-test2 test3", "250 test4"],
             response = {
                 success: true,
-                statusCode: 250, 
-                enhancedStatus: null, 
-                data: "test1\ntest2 test3\ntest4", 
+                statusCode: 250,
+                enhancedStatus: null,
+                data: "test1\ntest2 test3\ntest4",
                 line: lines.join("\n")
             }, i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             if(i++){
                 test.ok(false, "Should not run more than once");
@@ -157,29 +157,29 @@ this.SMTPResponseParserTests= {
             responses = [
                 {
                     success: true,
-                    statusCode: 256, 
-                    enhancedStatus: "1.2.3", 
-                    data: "test", 
+                    statusCode: 256,
+                    enhancedStatus: "1.2.3",
+                    data: "test",
                     line: lines[0]
                 },
                 {
                     success: true,
-                    statusCode: 250, 
-                    enhancedStatus: null, 
-                    data: "test1\ntest2 test3\ntest4", 
+                    statusCode: 250,
+                    enhancedStatus: null,
+                    data: "test1\ntest2 test3\ntest4",
                     line: lines.slice(1, 4).join("\n")
                 },
                 {
                     success: true,
-                    statusCode: 254, 
-                    enhancedStatus: null, 
-                    data: "test6", 
+                    statusCode: 254,
+                    enhancedStatus: null,
+                    data: "test6",
                     line: lines[4]
                 }],
             i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             test.deepEqual(data, responses[i++]);
         };
@@ -202,14 +202,14 @@ this.SMTPResponseParserTests= {
         var line = "nostatus",
             response = {
                 success: false,
-                statusCode: null, 
-                enhancedStatus: null, 
-                data: "nostatus", 
+                statusCode: null,
+                enhancedStatus: null,
+                data: "nostatus",
                 line: line
             }, i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             if(i++){
                 test.ok(false, "Should not run more than once");
@@ -271,29 +271,29 @@ this.SMTPResponseParserTests= {
             responses = [
                 {
                     success: true,
-                    statusCode: 256, 
-                    enhancedStatus: "1.2.3", 
-                    data: "test", 
+                    statusCode: 256,
+                    enhancedStatus: "1.2.3",
+                    data: "test",
                     line: lines[0]
                 },
                 {
                     success: true,
-                    statusCode: 250, 
-                    enhancedStatus: null, 
-                    data: "test1\ntest2 test3\ntest4", 
+                    statusCode: 250,
+                    enhancedStatus: null,
+                    data: "test1\ntest2 test3\ntest4",
                     line: lines.slice(1, 4).join("\n")
                 },
                 {
                     success: true,
-                    statusCode: 254, 
-                    enhancedStatus: null, 
-                    data: "test6", 
+                    statusCode: 254,
+                    enhancedStatus: null,
+                    data: "test6",
                     line: lines[4]
                 }],
             i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             test.deepEqual(data, responses[i++]);
         };
@@ -316,14 +316,14 @@ this.SMTPResponseParserTests= {
         var line = "150 1.2.3 test",
             response = {
                 success: false,
-                statusCode: 150, 
-                enhancedStatus: "1.2.3", 
-                data: "test", 
+                statusCode: 150,
+                enhancedStatus: "1.2.3",
+                data: "test",
                 line: line
             }, i=0;
 
         var parser = new SMTPResponseParser();
-        
+
         parser.ondata = function(data){
             if(i++){
                 test.ok(false, "Should not run more than once");

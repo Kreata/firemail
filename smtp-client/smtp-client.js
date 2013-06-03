@@ -121,7 +121,7 @@ function SMTPClient(host, port, options){
 
     /**
      * Keep track of the last bytes to see how the terminating dot should be placed
-     */ 
+     */
     this._lastDataBytes = "";
 
     /**
@@ -241,7 +241,7 @@ SMTPClient.prototype.quit = function(){
 
 /**
  * Reset authentication
- * 
+ *
  * @param {Object} [auth] Use this if you want to authenticate as another user
  */
 SMTPClient.prototype.reset = function(auth){
@@ -303,7 +303,7 @@ SMTPClient.prototype.send = function(chunk){
 };
 
 /**
- * Indicates that a data stream for the socket is ended. Works only in data 
+ * Indicates that a data stream for the socket is ended. Works only in data
  * mode (after `onready` event), ignored otherwise. Use it when you are done
  * with sending the mail. This method does not close the socket. Once the mail
  * has been queued by the server, `ondone` and `onidle` are emitted.
@@ -479,7 +479,7 @@ SMTPClient.prototype._sendString = function(chunk){
 
     // pass the chunk to the socket
     return (this.waitDrain = this.socket.send(new TextEncoder("UTF-8").encode(chunk).buffer));
-}
+};
 
 /**
  * Send a string command to the server, also append \r\n if needed

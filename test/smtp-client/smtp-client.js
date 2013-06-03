@@ -1,5 +1,5 @@
 this.SMTPClientTests= {
-    
+
     'Create SMTPClient object': function (test) {
         var client = new SMTPClient();
         test.ok(true, client instanceof SMTPClient);
@@ -11,7 +11,7 @@ this.SMTPClientTests= {
 
         var client = new SMTPClient("localhost", 1025);
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.close();
@@ -32,7 +32,7 @@ this.SMTPClientTests= {
 
         var client = new SMTPClient("localhost", 1025);
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
@@ -59,7 +59,7 @@ this.SMTPClientTests= {
         });
 
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
@@ -87,7 +87,7 @@ this.SMTPClientTests= {
         });
 
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
@@ -115,7 +115,7 @@ this.SMTPClientTests= {
         });
 
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.quit();
@@ -143,7 +143,7 @@ this.SMTPClientTests= {
         });
 
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(false, "Connection should not be opened, as authentication fails");
             client.quit();
@@ -165,7 +165,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -194,7 +194,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -223,7 +223,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -252,7 +252,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -286,7 +286,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -320,7 +320,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -364,7 +364,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var first = 0;
 
         client.onidle = function(){
@@ -407,7 +407,7 @@ this.SMTPClientTests= {
         var client = new SMTPClient("localhost", 1025);
 
         client.connect();
-        
+
         var idle = 0;
 
         client.onidle = function(){
@@ -455,7 +455,7 @@ this.SMTPClientTests= {
         // Self signed certificates are not supported, so we need a trusted secure server
         var client = new SMTPClient("smtp.gmail.com", 465, {useSSL: true});
         client.connect();
-        
+
         client.onidle = function(){
             test.ok(1, "Connection opened");
             client.close();
