@@ -329,6 +329,74 @@ var MIMEFunctions = {
     },
 
     /**
+     * Encodes and folds a header line for a MIME message header.
+     * Shorthand for mimeWordsEncode + foldLines
+     *
+     * @param {String} key Key name, will not be encoded
+     * @param {String|Uint8Array} value Value to be encoded
+     * @param {String} [fromCharset="UTF-8"] Character set of the value
+     * @return {String} encoded and folded header line
+     */
+    headerLineEncode: function(key, value, fromCharset){
+        var encodedValue = MIMEFunctions.mimeWordsEncode(value, "Q", 52, fromCharset);
+        return MIMEFunctions.foldLines(key+": "+encodedValue, 76);
+    },
+
+    /**
+     * Splits a string by :
+     * The result is not mime word decoded, you need to do your own decoding based
+     * on the rules for the specific header key
+     *
+     * @param {String} headerLine Single header line, might include linebreaks as well if folded
+     * @return {Object} And object of {key, value}
+     */
+    headerLineDecode: function(headerLine){
+        var line = (headerLine || "").toString().replace(/(?:\r?\n|\r)[ \t]*/g, " ").trim(),
+            match = line.match(/^\s*([^:]+):(.*)$/),
+            key = (match && match[1] || "").trim(),
+            value = (match && match[2] || "").trim();
+
+        return {key: key, value: value};
+    },
+
+    /**
+     * Parses a block of header lines. Does not decode mime words as every
+     * header might have its own rules (eg. formatted email addresses and such)
+     *
+     * @param {String} headers Headers string
+     * @return {Object} An object of headers, where header keys are object keys. NB! Several values with the same key make up an Array
+     */
+    headerLinesDecode: function(headers){
+        var lines = headers.split(/\r?\n|\r/),
+            headersObj = {},
+            key, value,
+            header,
+            i, len;
+
+        for(i = lines.length-1; i >= 0; i--){
+            if(i && lines[i].match(/^\s/)){
+                lines[i-1] += "\r\n" + lines[i];
+                lines.splice(i, 1);
+            }
+        }
+
+        for(i=0, len = lines.length; i<len; i++){
+            header = MIMEFunctions.headerLineDecode(lines[i]);
+            key = (header.key || "").toString().toLowerCase().trim();
+            value = header.value || "";
+
+            if(!headersObj[key]){
+                headersObj[key] = value;
+            }else{
+
+                headersObj[key] = [].concat(headersObj[key], value);
+            }
+        }
+
+        return headersObj;
+    },
+
+    /**
      * Splits a mime encoded string. Needed for dividing mime words into smaller chunks
      *
      * @param {String} str Mime encoded string to be split up
@@ -517,74 +585,6 @@ var MIMEFunctions = {
             }
         }
         return false;
-    },
-
-    /**
-     * Encodes and folds a header line for a MIME message.
-     * Shorthand for mimeWordsEncode + foldLines
-     *
-     * @param {String} key Key name, will not be encoded
-     * @param {String|Uint8Array} value Value to be encoded
-     * @param {String} [fromCharset="UTF-8"] Character set of the value
-     * @return {String} encoded and folded header line
-     */
-    headerLineEncode: function(key, value, fromCharset){
-        var encodedValue = MIMEFunctions.mimeWordsEncode(value, "Q", 52, fromCharset);
-        return MIMEFunctions.foldLines(key+": "+encodedValue, 76);
-    },
-
-    /**
-     * Parses a block of header lines. Does not decode mime words as every
-     * header might have its own rules (eg. formatted email addresses and such)
-     *
-     * @param {String} headers Headers string
-     * @return {Object} An object of headers, where header keys are object keys. NB! Several values with the same key make up an Array
-     */
-    headerLinesDecode: function(headers){
-        var lines = headers.split(/\r?\n|\r/),
-            headersObj = {},
-            key, value,
-            header,
-            i, len;
-
-        for(i = lines.length-1; i >= 0; i--){
-            if(i && lines[i].match(/^\s/)){
-                lines[i-1] += "\r\n" + lines[i];
-                lines.splice(i, 1);
-            }
-        }
-
-        for(i=0, len = lines.length; i<len; i++){
-            header = MIMEFunctions.headerLineDecode(lines[i]);
-            key = (header.key || "").toString().toLowerCase().trim();
-            value = header.value || "";
-
-            if(!headersObj[key]){
-                headersObj[key] = value;
-            }else{
-
-                headersObj[key] = [].concat(headersObj[key], value);
-            }
-        }
-
-        return headersObj;
-    },
-
-    /**
-     * Splits a string by :
-     * The result is not mime word decoded, you need to do your own decoding based
-     * on the rules for the specific header key
-     *
-     * @param {String} header Single header line, might include linebreaks as well if folded
-     * @return {Object} And object of {key, value}
-     */
-    headerLineDecode: function(header){
-        var line = (header || "").toString().replace(/(?:\r?\n|\r)[ \t]*/g, " ").trim(),
-            match = line.match(/^\s*([^:]+):(.*)$/),
-            key = (match && match[1] || "").trim(),
-            value = (match && match[2] || "").trim();
-
-        return {key: key, value: value};
     }
 };
 
