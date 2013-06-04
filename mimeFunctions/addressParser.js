@@ -18,7 +18,7 @@
 /**
  * Defines an object as a namespace for the parsing function
  */
-var MIMEAddressParser = {};
+var addressParser = {};
 
 /**
  * Parses structured e-mail addresses from an address field
@@ -34,8 +34,8 @@ var MIMEAddressParser = {};
  * @param {String} str Address field
  * @return {Array} An array of address objects
  */
-MIMEAddressParser.parse = function(str){
-    var tokenizer = new MIMEAddressParser.Tokenizer(str),
+addressParser.parse = function(str){
+    var tokenizer = new addressParser.Tokenizer(str),
         tokens = tokenizer.tokenize();
 
     var addresses = [],
@@ -56,7 +56,7 @@ MIMEAddressParser.parse = function(str){
     }
 
     addresses.forEach(function(address){
-        address = MIMEAddressParser._handleAddress(address);
+        address = addressParser._handleAddress(address);
         if(address.length){
             parsedAddresses = parsedAddresses.concat(address);
         }
@@ -71,7 +71,7 @@ MIMEAddressParser.parse = function(str){
  * @param {Array} tokens Tokens object
  * @return {Object} Address object
  */
-MIMEAddressParser._handleAddress = function(tokens){
+addressParser._handleAddress = function(tokens){
     var token,
         isGroup = false,
         state = "text",
@@ -123,7 +123,7 @@ MIMEAddressParser._handleAddress = function(tokens){
             data.text = data.text.join(" ");
         }
 
-        addresses = addresses.concat(MIMEAddressParser.parse(data.group.join(",")).map(function(address){
+        addresses = addresses.concat(addressParser.parse(data.group.join(",")).map(function(address){
             address.name = data.text || address.name;
             return address;
         }));
@@ -203,7 +203,7 @@ MIMEAddressParser._handleAddress = function(tokens){
  * @constructor
  * @param {String} str Address field string
  */
-MIMEAddressParser.Tokenizer = function(str){
+addressParser.Tokenizer = function(str){
 
     this.str = (str || "").toString();
     this.operatorCurrent = "";
@@ -218,7 +218,7 @@ MIMEAddressParser.Tokenizer = function(str){
 /**
  * Operator tokens and which tokens are expected to end the sequence
  */
-MIMEAddressParser.Tokenizer.prototype.operators = {
+addressParser.Tokenizer.prototype.operators = {
     "\"": "\"",
     "(": ")",
     "<": ">",
@@ -231,7 +231,7 @@ MIMEAddressParser.Tokenizer.prototype.operators = {
  *
  * @return {Array} An array of operator|text tokens
  */
-MIMEAddressParser.Tokenizer.prototype.tokenize = function(){
+addressParser.Tokenizer.prototype.tokenize = function(){
     var chr, list = [];
     for(var i=0, len = this.str.length; i<len; i++){
         chr = this.str.charAt(i);
@@ -253,7 +253,7 @@ MIMEAddressParser.Tokenizer.prototype.tokenize = function(){
  *
  * @param {String} chr Character from the address field
  */
-MIMEAddressParser.Tokenizer.prototype.checkChar = function(chr){
+addressParser.Tokenizer.prototype.checkChar = function(chr){
     if((chr in this.operators || chr == "\\") && this.escaped){
         this.escaped = false;
     }else if(this.operatorExpecting && chr == this.operatorExpecting){

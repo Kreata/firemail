@@ -1,10 +1,10 @@
-this.MIMEFunctionsTests = {
+this.mimeFunctionsTests = {
 
     'mimeEncode UTF-8': function (test) {
         var str = "tere ÕÄÖÕ",
             encodedStr = "tere =C3=95=C3=84=C3=96=C3=95";
 
-        test.equal(MIMEFunctions.mimeEncode(str), encodedStr);
+        test.equal(mimeFunctions.mimeEncode(str), encodedStr);
         test.done();
     },
 
@@ -13,7 +13,7 @@ this.MIMEFunctionsTests = {
             encoding = "ks_c_5601-1987",
             encodedStr = "=EC=8B=A0";
 
-        test.equal(MIMEFunctions.mimeEncode(buf, encoding), encodedStr);
+        test.equal(mimeFunctions.mimeEncode(buf, encoding), encodedStr);
         test.done();
     },
 
@@ -21,7 +21,7 @@ this.MIMEFunctionsTests = {
         var str = "tere ÕÄÖÕ",
             encodedStr = "tere =C3=95=C3=84=C3=96=C3=95";
 
-        test.equal(MIMEFunctions.mimeDecode(encodedStr), str);
+        test.equal(mimeFunctions.mimeDecode(encodedStr), str);
         test.done();
     },
 
@@ -30,7 +30,7 @@ this.MIMEFunctionsTests = {
             encoding = "ks_c_5601-1987",
             encodedStr = "=BD=C5";
 
-        test.equal(MIMEFunctions.mimeDecode(encodedStr, encoding), str);
+        test.equal(mimeFunctions.mimeDecode(encodedStr, encoding), str);
         test.done();
     },
 
@@ -38,7 +38,7 @@ this.MIMEFunctionsTests = {
         var str = "tere ÕÄÖÕ",
             encodedStr = "dGVyZSDDlcOEw5bDlQ==";
 
-        test.equal(MIMEFunctions.base64Encode(str), encodedStr);
+        test.equal(mimeFunctions.base64Encode(str), encodedStr);
         test.done();
     },
 
@@ -47,7 +47,7 @@ this.MIMEFunctionsTests = {
             encoding = "ks_c_5601-1987",
             encodedStr = "7Iug";
 
-        test.equal(MIMEFunctions.base64Encode(buf, encoding), encodedStr);
+        test.equal(mimeFunctions.base64Encode(buf, encoding), encodedStr);
         test.done();
     },
 
@@ -55,7 +55,7 @@ this.MIMEFunctionsTests = {
         var str = "tere ÕÄÖÕ",
             encodedStr = "dGVyZSDDlcOEw5bDlQ==";
 
-        test.equal(MIMEFunctions.base64Decode(encodedStr), str);
+        test.equal(mimeFunctions.base64Decode(encodedStr), str);
         test.done();
     },
 
@@ -64,7 +64,7 @@ this.MIMEFunctionsTests = {
             encoding = "ks_c_5601-1987",
             encodedStr = "vcU=";
 
-        test.equal(MIMEFunctions.base64Decode(encodedStr, encoding), str);
+        test.equal(mimeFunctions.base64Decode(encodedStr, encoding), str);
         test.done();
     },
 
@@ -72,7 +72,7 @@ this.MIMEFunctionsTests = {
         var str = "tere ÕÄ \t\nÕÄ \t\nÖÕ",
             encodedStr = "tere =C3=95=C3=84=20=09\r\n=C3=95=C3=84=20=09\r\n=C3=96=C3=95";
 
-        test.equal(MIMEFunctions.quotedPrintableEncode(str), encodedStr);
+        test.equal(mimeFunctions.quotedPrintableEncode(str), encodedStr);
         test.done();
     },
 
@@ -80,7 +80,7 @@ this.MIMEFunctionsTests = {
         var str = "tere ÕÄ \t\r\nÕÄ \t\r\nÖÕ",
             encodedStr = "tere =C3=95=C3=84=20=09\r\n=C3=95=\r\n=C3=84=\r\n=20=09\r\n=C3=96=C3=95=";
 
-        test.equal(MIMEFunctions.quotedPrintableDecode(encodedStr), str);
+        test.equal(mimeFunctions.quotedPrintableDecode(encodedStr), str);
         test.done();
     },
 
@@ -90,21 +90,21 @@ this.MIMEFunctionsTests = {
                          "=C3=B5=C3=A4=C3=B6=C3=BC=C3=B5=C3=A4=C3=B6=C3=BC=C3=B5=C3=A4=C3=B6=C3=BC=\r\n"+
                          "=C3=B5=C3=A4=C3=B6=C3=B5";
 
-        test.equal(MIMEFunctions.quotedPrintableEncode(str), encodedStr);
+        test.equal(mimeFunctions.quotedPrintableEncode(str), encodedStr);
         test.done();
     },
 
     "Encode short string": function(test){
-        test.equal("Tere =C3=95=C3=84=C3=96=C3=9C!", MIMEFunctions.quotedPrintableEncode(new Uint8Array([0x54,0x65,0x72,0x65,0x20,0xD5,0xC4,0xD6,0xDC,0x21]), "Latin_1"));
-        test.equal("Tere =C3=95=C3=84=C3=96=C3=9C=C5=A0=C5=BD!", MIMEFunctions.quotedPrintableEncode("Tere ÕÄÖÜŠŽ!"));
-        test.equal("Tere =C5=A0=C5=BD!", MIMEFunctions.quotedPrintableEncode(new Uint8Array([0x54,0x65,0x72,0x65,0x20,0xD0,0xDE,0x21]), "Win-1257"));
+        test.equal("Tere =C3=95=C3=84=C3=96=C3=9C!", mimeFunctions.quotedPrintableEncode(new Uint8Array([0x54,0x65,0x72,0x65,0x20,0xD5,0xC4,0xD6,0xDC,0x21]), "Latin_1"));
+        test.equal("Tere =C3=95=C3=84=C3=96=C3=9C=C5=A0=C5=BD!", mimeFunctions.quotedPrintableEncode("Tere ÕÄÖÜŠŽ!"));
+        test.equal("Tere =C5=A0=C5=BD!", mimeFunctions.quotedPrintableEncode(new Uint8Array([0x54,0x65,0x72,0x65,0x20,0xD0,0xDE,0x21]), "Win-1257"));
         test.done();
     },
 
     "Don't wrap between encoded chars": function(test){
         var wrapped = "a__________________________",
             wrappedEncoded = "a=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=\r\n=5F=5F";
-        test.equal(wrappedEncoded, MIMEFunctions.quotedPrintableEncode(wrapped));
+        test.equal(wrappedEncoded, mimeFunctions.quotedPrintableEncode(wrapped));
         test.done();
     },
 
@@ -118,14 +118,14 @@ this.MIMEFunctionsTests = {
                               "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklm=\r\n"+
                               "nopqrstuvwxyz0123456789";
 
-        test.equal(longLineEncoded, MIMEFunctions.quotedPrintableEncode(longLine));
+        test.equal(longLineEncoded, mimeFunctions.quotedPrintableEncode(longLine));
         test.done();
     },
 
     "Quote at line edge": function(test){
         var str = 'Title: <a href="http://www.elezea.com/2012/09/iphone-5-local-maximum/">The future of e-commerce is storytelling</a> <br>',
             strEncoded = "Title: <a href=3D=22http://www.elezea.com/2012/09/iphone-5-local-maximum/=\r\n=22>The future of e-commerce is storytelling</a> =\r\n<br>";
-        test.equal(strEncoded, MIMEFunctions.quotedPrintableEncode(str));
+        test.equal(strEncoded, mimeFunctions.quotedPrintableEncode(str));
         test.done();
     },
 
@@ -138,7 +138,7 @@ this.MIMEFunctionsTests = {
                               "=C3=84=C3=84=C3=84PQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJ=\r\n"+
                               "KLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVW=\r\n"+
                               "XYZabcdefghijklmnopqrstuvwxyz0123456789";
-        test.equal(longLineEncoded, MIMEFunctions.quotedPrintableEncode(longLine));
+        test.equal(longLineEncoded, mimeFunctions.quotedPrintableEncode(longLine));
         test.done();
     },
 
@@ -152,7 +152,7 @@ this.MIMEFunctionsTests = {
                               "KLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVW=\r\n"+
                               "XYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        test.equal(longLine, MIMEFunctions.quotedPrintableDecode(longLineEncoded));
+        test.equal(longLine, mimeFunctions.quotedPrintableDecode(longLineEncoded));
         test.done();
     },
 
@@ -160,20 +160,20 @@ this.MIMEFunctionsTests = {
         var input = "Tere =\r\nvana kere=",
             output = "Tere vana kere";
 
-        test.equal(output, MIMEFunctions.quotedPrintableDecode(input));
+        test.equal(output, mimeFunctions.quotedPrintableDecode(input));
         test.done();
     },
 
     "Surrogate pair": function(test){
         // 💩 pile of poo
-        test.equal("=F0=9F=92=A9", MIMEFunctions.quotedPrintableEncode('\ud83d\udca9'));
-        test.equal("\ud83d\udca9", MIMEFunctions.quotedPrintableDecode('=F0=9F=92=A9'));
+        test.equal("=F0=9F=92=A9", mimeFunctions.quotedPrintableEncode('\ud83d\udca9'));
+        test.equal("\ud83d\udca9", mimeFunctions.quotedPrintableDecode('=F0=9F=92=A9'));
         test.done();
     },
 
     "Encode Mime Word QP": function(test){
         test.equal("=?UTF-8?Q?J=C3=B5ge-va=C5=BD?=",
-            MIMEFunctions.mimeWordEncode(new Uint8Array([0x4A,0xF5,0x67,0x65,0x2D,0x76,0x61,0xDE]), "Q", "iso-8859-13"));
+            mimeFunctions.mimeWordEncode(new Uint8Array([0x4A,0xF5,0x67,0x65,0x2D,0x76,0x61,0xDE]), "Q", "iso-8859-13"));
         test.done();
     },
 
@@ -182,10 +182,10 @@ this.MIMEFunctionsTests = {
             outputStr = "=?UTF-8?Q?J=C3=B5geva_?= =?UTF-8?Q?J=C3=B5geva_?= =?UTF-8?Q?J=C3=B5geva?= mugeva "+
                     "=?UTF-8?Q?J=C3=B5geva_?= =?UTF-8?Q?J=C3=B5geva_?= =?UTF-8?Q?J=C3=B5geva_?= "+
                     "=?UTF-8?Q?J=C3=B5geva_?= =?UTF-8?Q?J=C3=B5geva?=",
-            encoded = MIMEFunctions.mimeWordsEncode(inputStr, "Q", 16);
+            encoded = mimeFunctions.mimeWordsEncode(inputStr, "Q", 16);
 
         test.equal(outputStr, encoded);
-        test.equal(inputStr, MIMEFunctions.mimeWordsDecode(encoded));
+        test.equal(inputStr, mimeFunctions.mimeWordsDecode(encoded));
         test.done();
     },
 
@@ -196,10 +196,10 @@ this.MIMEFunctionsTests = {
                     "=?UTF-8?B?ZXZh?= =?UTF-8?B?IErDtQ==?= =?UTF-8?B?Z2V2?= =?UTF-8?B?YSBK?= "+
                     "=?UTF-8?B?w7VnZQ==?= =?UTF-8?B?dmEg?= =?UTF-8?B?SsO1Zw==?= =?UTF-8?B?ZXZh?= "+
                     "=?UTF-8?B?IErDtQ==?= =?UTF-8?B?Z2V2?= =?UTF-8?B?YQ==?=",
-            encoded = MIMEFunctions.mimeWordsEncode(inputStr,"B", 19);
+            encoded = mimeFunctions.mimeWordsEncode(inputStr,"B", 19);
 
         test.equal(outputStr, encoded);
-        test.equal(inputStr, MIMEFunctions.mimeWordsDecode(encoded));
+        test.equal(inputStr, mimeFunctions.mimeWordsDecode(encoded));
         test.done();
     },
 
@@ -209,9 +209,9 @@ this.MIMEFunctionsTests = {
                         " =?UTF-8?Q?m=C3=B5ni_t=C3=B5nis_k=C3=B5llas_p=C3=B5?=\r\n"+
                         " =?UTF-8?Q?llas_t=C3=B5llas_r=C3=B5llas_ju=C5=A1la_?=\r\n"+
                         " =?UTF-8?Q?ku=C5=A1la_tu=C5=A1la?= musla",
-            encodedHeaderLine = MIMEFunctions.mimeWordsEncode(inputStr, "Q", 52);
+            encodedHeaderLine = mimeFunctions.mimeWordsEncode(inputStr, "Q", 52);
 
-        test.equal(outputStr, MIMEFunctions.foldLines(encodedHeaderLine, 76));
+        test.equal(outputStr, mimeFunctions.foldLines(encodedHeaderLine, 76));
         test.done();
     },
 
@@ -221,7 +221,7 @@ this.MIMEFunctionsTests = {
                         "jušla kušla tušla musla Testin command line kirja õkva kakva mõni tõnis \r\n"+
                         "kõllas põllas tõllas rõllas jušla kušla tušla musla";
 
-        test.equal(outputStr, MIMEFunctions.foldLines(inputStr, 76, true));
+        test.equal(outputStr, mimeFunctions.foldLines(inputStr, 76, true));
         test.done();
     },
 
@@ -231,30 +231,30 @@ this.MIMEFunctionsTests = {
             output1 = "=?UTF-8?Q?=D0=BC=D0=B5=D1=82=D0=B5=D0=BB=D1=8C=22_?= =?UTF-8?Q?=D0=B2=D1=8C=D1=8E=D0=B3=D0=B0?=",
             output2 = "=?UTF-8?Q?=D0=BC=D0=B5=D1=82=D0=B5=D0=BB=D1=8C'?= =?UTF-8?Q?=D0=B2=D1=8C=D1=8E=D0=B3=D0=B0?=";
 
-        test.equal(MIMEFunctions.mimeWordsEncode(input1, "Q", 52), output1);
-        test.equal(MIMEFunctions.mimeWordsDecode(output1), input1);
+        test.equal(mimeFunctions.mimeWordsEncode(input1, "Q", 52), output1);
+        test.equal(mimeFunctions.mimeWordsDecode(output1), input1);
 
-        test.equal(MIMEFunctions.mimeWordsEncode(input2, "Q", 52), output2);
-        test.equal(MIMEFunctions.mimeWordsDecode(output2), input2);
+        test.equal(mimeFunctions.mimeWordsEncode(input2, "Q", 52), output2);
+        test.equal(mimeFunctions.mimeWordsDecode(output2), input2);
 
         test.done();
     },
 
     "mimeWordsDecode example": function(test){
-        test.equal("Hello: See on õhin test", MIMEFunctions.mimeWordsDecode("Hello: =?UTF-8?q?See_on_=C3=B5hin_test?="));
-        test.equal("=?UTF-8?Q?See_on_=C3=B5hin_test?=", MIMEFunctions.mimeWordEncode("See on õhin test"));
-        test.equal("See on õhin test", MIMEFunctions.mimeWordDecode("=?UTF-8?q?See_on_=C3=B5hin_test?="));
+        test.equal("Hello: See on õhin test", mimeFunctions.mimeWordsDecode("Hello: =?UTF-8?q?See_on_=C3=B5hin_test?="));
+        test.equal("=?UTF-8?Q?See_on_=C3=B5hin_test?=", mimeFunctions.mimeWordEncode("See on õhin test"));
+        test.equal("See on õhin test", mimeFunctions.mimeWordDecode("=?UTF-8?q?See_on_=C3=B5hin_test?="));
         test.done();
     },
 
     "Decode Mime Word QP": function(test){
-        test.equal("Jõge-vaŽ", MIMEFunctions.mimeWordDecode("=?ISO-8859-13?Q?J=F5ge-va=DE?="));
+        test.equal("Jõge-vaŽ", mimeFunctions.mimeWordDecode("=?ISO-8859-13?Q?J=F5ge-va=DE?="));
         test.done();
     },
 
     "Decode Mime Words": function(test){
-        test.equal("Jõge-vaŽ zz Jõge-vaŽJõge-vaŽJõge-vaŽ", MIMEFunctions.mimeWordsDecode("=?ISO-8859-13?Q?J=F5ge-va=DE?= zz =?ISO-8859-13?Q?J=F5ge-va=DE?= =?ISO-8859-13?Q?J=F5ge-va=DE?= =?ISO-8859-13?Q?J=F5ge-va=DE?="));
-        test.equal("Sssś Lałalalala", MIMEFunctions.mimeWordsDecode("=?UTF-8?B?U3NzxZsgTGHFgmFsYQ==?= =?UTF-8?B?bGFsYQ==?="));
+        test.equal("Jõge-vaŽ zz Jõge-vaŽJõge-vaŽJõge-vaŽ", mimeFunctions.mimeWordsDecode("=?ISO-8859-13?Q?J=F5ge-va=DE?= zz =?ISO-8859-13?Q?J=F5ge-va=DE?= =?ISO-8859-13?Q?J=F5ge-va=DE?= =?ISO-8859-13?Q?J=F5ge-va=DE?="));
+        test.equal("Sssś Lałalalala", mimeFunctions.mimeWordsDecode("=?UTF-8?B?U3NzxZsgTGHFgmFsYQ==?= =?UTF-8?B?bGFsYQ==?="));
         test.done();
     },
 
@@ -265,7 +265,7 @@ this.MIMEFunctionsTests = {
                         " =?UTF-8?Q?m=C3=B5ni_t=C3=B5nis_k=C3=B5llas_p=C3=B5?=\r\n"+
                         " =?UTF-8?Q?llas_t=C3=B5llas_r=C3=B5llas_ju=C5=A1la_?=\r\n"+
                         " =?UTF-8?Q?ku=C5=A1la_tu=C5=A1la?= musla",
-            encodedHeaderLine = MIMEFunctions.headerLineEncode(key, value);
+            encodedHeaderLine = mimeFunctions.headerLineEncode(key, value);
 
         test.equal(outputStr, encodedHeaderLine);
         test.done();
@@ -284,7 +284,7 @@ this.MIMEFunctionsTests = {
                          " =?UTF-8?Q?m=C3=B5kva_=C5=A1apaka=C5=A1?= tutikas suur maja,\r\n"+
                          " =?UTF-8?Q?k=C3=B5rge?= hoone, segane jutt";
 
-        test.deepEqual(headersObj, MIMEFunctions.headerLinesDecode(headersStr));
+        test.deepEqual(headersObj, mimeFunctions.headerLinesDecode(headersStr));
         test.done();
     }
 };

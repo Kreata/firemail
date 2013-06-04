@@ -2,16 +2,16 @@
 
 # MIME Types
 
-`MIMETypes` allows you to detect file extensions for content types and vice-versa.
+`mimeTypes` allows you to detect file extensions for content types and vice-versa.
 
 ## Usage
 
-Include files [mime-types.js](mime-functions/mime-types.js), [list-mime-types.js](mime-functions/list-mime-types.js) and [list-extensions.js](mime-functions/list-extensions.js) on the page.
+Include files [mimeTypes.js](mimeFunctions/mimeTypes.js), [listMimeTypes.js](mimeFunctions/listMimeTypes.js) and [listExtensions.js](mimeFunctions/listExtensions.js) on the page.
 
 ```html
-<script src="mime-types.js"></script>
-<script src="list-mime-types.js"></script>
-<script src="list-extensions.js"></script>
+<script src="mimeTypes.js"></script>
+<script src="listMimeTypes.js"></script>
+<script src="listExtensions.js"></script>
 ```
 
 ## Methods
@@ -20,13 +20,13 @@ Include files [mime-types.js](mime-functions/mime-types.js), [list-mime-types.js
 
  Returns file extension for a content type string. If no suitable extensions are found, 'bin' is used as the default extension.
 
-    MIMETypes.detectExtension(mimeType) -> String
+    mimeTypes.detectExtension(mimeType) -> String
 
   * **mimeType** - Content type to be checked for
 
 For example:
 
-    MIMETypes.detectExtension("image/jpeg")
+    mimeTypes.detectExtension("image/jpeg")
 
 results in
 
@@ -37,13 +37,13 @@ results in
 
 Returns content type for a file extension. If no suitable content types are found, 'application/octet-stream' is used as the default content type
 
-    MIMETypes.detectMimeType(extension) -> String
+    mimeTypes.detectMimeType(extension) -> String
 
   * **extension** Extension to be checked for
 
 For example:
 
-    MIMETypes.detectExtension("jpeg")
+    mimeTypes.detectExtension("jpeg")
 
 results in
 

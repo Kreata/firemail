@@ -11,17 +11,17 @@ SMTP Client allows you to connect to and stream data to a SMTP server
 
 ## Usage
 
-Include files [smtp-response-parser.js](smtp-client/smtp-response-parser.js) and [smtp-client.js](smtp-client/smtp-client.js) on the page.
+Include files [smtpResponseParser.js](smtpClient/smtpResponseParser.js) and [smtpClient.js](smtpClient/smtpClient.js) on the page.
 
 ```html
-<script src="smtp-response-parser.js"></script>
-<script src="smtp-client.js"></script>
+<script src="smtpResponseParser.js"></script>
+<script src="smtpClient.js"></script>
 ```
 
-Create SMTPClient object with:
+Create smtpClient object with:
 
 ```javascript
-var client = new SMTPClient(host, port, options)
+var client = new smtpClient(host, port, options)
 ```
 
 where

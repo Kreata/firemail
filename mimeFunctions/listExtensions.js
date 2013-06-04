@@ -1,4 +1,4 @@
-MIMETypes._extensions =
+mimeTypes._extensions =
 {
     "123": "application/vnd.lotus-1-2-3",
     "323": "text/h323",

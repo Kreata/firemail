@@ -1,13 +1,13 @@
-this.SMTPResponseParserTests= {
+this.smtpResponseParserTests= {
 
-    'Create SMTPResponseParser object': function (test) {
-        var parser = new SMTPResponseParser();
-        test.ok(true, parser instanceof SMTPResponseParser);
+    'Create smtpResponseParser object': function (test) {
+        var parser = new smtpResponseParser();
+        test.ok(true, parser instanceof smtpResponseParser);
         test.done();
     },
 
     'Write data to parser': function (test) {
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
         parser.send("test");
         test.equal("test", parser._remainder);
         test.done();
@@ -25,7 +25,7 @@ this.SMTPResponseParserTests= {
                 line: line
             }, i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             if(i++){
@@ -58,7 +58,7 @@ this.SMTPResponseParserTests= {
                 line: line
             }, i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             if(i++){
@@ -98,7 +98,7 @@ this.SMTPResponseParserTests= {
                 line: lines[1]
             }];
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             test.deepEqual(data, responses[i++]);
@@ -124,7 +124,7 @@ this.SMTPResponseParserTests= {
                 line: lines.join("\n")
             }, i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             if(i++){
@@ -178,7 +178,7 @@ this.SMTPResponseParserTests= {
                 }],
             i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             test.deepEqual(data, responses[i++]);
@@ -208,7 +208,7 @@ this.SMTPResponseParserTests= {
                 line: line
             }, i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             if(i++){
@@ -232,7 +232,7 @@ this.SMTPResponseParserTests= {
     'Events: onerror, closed stream, no write': function (test) {
         test.expect(1);
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.onerror = function(err){
             test.ok(err);
@@ -247,7 +247,7 @@ this.SMTPResponseParserTests= {
     'Events: onerror, closed stream, no end': function (test) {
         test.expect(1);
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.onerror = function(err){
             test.ok(err);
@@ -292,7 +292,7 @@ this.SMTPResponseParserTests= {
                 }],
             i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             test.deepEqual(data, responses[i++]);
@@ -322,7 +322,7 @@ this.SMTPResponseParserTests= {
                 line: line
             }, i=0;
 
-        var parser = new SMTPResponseParser();
+        var parser = new smtpResponseParser();
 
         parser.ondata = function(data){
             if(i++){

@@ -4,7 +4,7 @@ this.CharsetTests = {
         var str = "신",
             encoded = new Uint8Array([0xEC, 0x8B, 0xA0]);
 
-        test.deepEqual(encoded, MIMEFunctions.charset.encode(str));
+        test.deepEqual(encoded, mimeFunctions.charset.encode(str));
         test.done();
     },
 
@@ -12,7 +12,7 @@ this.CharsetTests = {
         var str = "신",
             encoded = new Uint8Array([0xEC, 0x8B, 0xA0]);
 
-        test.deepEqual(str, MIMEFunctions.charset.decode(encoded));
+        test.deepEqual(str, mimeFunctions.charset.decode(encoded));
         test.done();
     },
 
@@ -21,7 +21,7 @@ this.CharsetTests = {
             encoding = "ks_c_5601-1987",
             encoded = new Uint8Array([0xBD, 0xC5]);
 
-        test.deepEqual(str, MIMEFunctions.charset.decode(encoded,encoding));
+        test.deepEqual(str, mimeFunctions.charset.decode(encoded,encoding));
         test.done();
     },
 
@@ -30,7 +30,7 @@ this.CharsetTests = {
             encoding = "ks_c_5601-1987",
             encoded = new Uint8Array([0xBD, 0xC5]);
 
-        test.deepEqual(converted, MIMEFunctions.charset.convert(encoded, encoding));
+        test.deepEqual(converted, mimeFunctions.charset.convert(encoded, encoding));
         test.done();
     }
 

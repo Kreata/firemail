@@ -1,4 +1,4 @@
-MIMETypes._mimeTypes =
+mimeTypes._mimeTypes =
 {
     "application/envoy": "evy",
     "application/fractals": "fif",

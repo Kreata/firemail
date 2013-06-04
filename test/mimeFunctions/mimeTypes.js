@@ -1,10 +1,10 @@
-this.MIMETypesTests = {
+this.mimeTypesTests = {
 
     'Exact match for an extension': function (test) {
         var extension = "doc",
             contentType = "application/msword";
 
-        test.equal(MIMETypes.detectMimeType(extension), contentType);
+        test.equal(mimeTypes.detectMimeType(extension), contentType);
         test.done();
     },
 
@@ -12,7 +12,7 @@ this.MIMETypesTests = {
         var extension = "doc",
             contentType = "application/msword";
 
-        test.equal(MIMETypes.detectExtension(contentType), extension);
+        test.equal(mimeTypes.detectExtension(contentType), extension);
         test.done();
     },
 
@@ -20,7 +20,7 @@ this.MIMETypesTests = {
         var extension = "js",
             contentType = "application/javascript";
 
-        test.equal(MIMETypes.detectMimeType(extension), contentType);
+        test.equal(mimeTypes.detectMimeType(extension), contentType);
         test.done();
     },
 
@@ -28,7 +28,7 @@ this.MIMETypesTests = {
         var extension = "jpeg",
             contentType = "image/jpeg";
 
-        test.equal(MIMETypes.detectExtension(contentType), extension);
+        test.equal(mimeTypes.detectExtension(contentType), extension);
         test.done();
     }
 };

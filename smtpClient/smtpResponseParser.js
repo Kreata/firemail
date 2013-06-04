@@ -20,7 +20,7 @@
  *
  * @constructor
  */
-var SMTPResponseParser = function(){
+var smtpResponseParser = function(){
 
     /**
      * If the complete line is not received yet, contains the beginning of it
@@ -43,9 +43,9 @@ var SMTPResponseParser = function(){
 /**
  * NB! Errors do not block, the parsing and data emitting continues despite of the errors
  */
-SMTPResponseParser.prototype.onerror = function(error){};
-SMTPResponseParser.prototype.ondata = function(data){};
-SMTPResponseParser.prototype.onend = function(){};
+smtpResponseParser.prototype.onerror = function(error){};
+smtpResponseParser.prototype.ondata = function(data){};
+smtpResponseParser.prototype.onend = function(){};
 
 // Public API
 
@@ -54,7 +54,7 @@ SMTPResponseParser.prototype.onend = function(){};
  *
  * @param {String} chunk Chunk of data received from the server
  */
-SMTPResponseParser.prototype.send = function(chunk){
+smtpResponseParser.prototype.send = function(chunk){
     if(this.destroyed){
         return this.onerror(new Error("This parser has already been closed, 'write' is prohibited"));
     }
@@ -73,7 +73,7 @@ SMTPResponseParser.prototype.send = function(chunk){
  *
  * @param {String} [chunk] Chunk of data received from the server
  */
-SMTPResponseParser.prototype.end = function(chunk){
+smtpResponseParser.prototype.end = function(chunk){
     if(this.destroyed){
         return this.onerror(new Error("This parser has already been closed, 'end' is prohibited"));
     }
@@ -98,7 +98,7 @@ SMTPResponseParser.prototype.end = function(chunk){
  *
  * @param {String} line Complete line of data from the server
  */
-SMTPResponseParser.prototype._processLine = function(line){
+smtpResponseParser.prototype._processLine = function(line){
     var match, response;
 
     // possible input strings for the regex:

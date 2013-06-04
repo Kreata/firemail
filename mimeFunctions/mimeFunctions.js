@@ -15,7 +15,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-var MIMEFunctions = {
+var mimeFunctions = {
 
     /**
      * Encodes all non printable and non ascii bytes to =XX form, where XX is the
@@ -29,7 +29,7 @@ var MIMEFunctions = {
     mimeEncode: function(str, fromCharset){
         fromCharset = fromCharset || "UTF-8";
 
-        var buffer = MIMEFunctions.charset.convert(str || "", fromCharset),
+        var buffer = mimeFunctions.charset.convert(str || "", fromCharset),
             ranges = [[0x09],
                       [0x0A],
                       [0x0D],
@@ -42,7 +42,7 @@ var MIMEFunctions = {
             result = "";
 
         for(var i=0, len = buffer.length; i<len; i++){
-            if(MIMEFunctions._checkRanges(buffer[i], ranges)){
+            if(mimeFunctions._checkRanges(buffer[i], ranges)){
                 result += String.fromCharCode(buffer[i]);
                 continue;
             }
@@ -79,7 +79,7 @@ var MIMEFunctions = {
             buffer[bufferPos++] = chr.charCodeAt(0);
         }
 
-        return MIMEFunctions.charset.decode(buffer, fromCharset);
+        return mimeFunctions.charset.decode(buffer, fromCharset);
     },
 
     /**
@@ -91,9 +91,9 @@ var MIMEFunctions = {
      * @return {String} Base64 encoded string
      */
     base64Encode: function(str, fromCharset){
-        var buf = MIMEFunctions.charset.convert(str || "", fromCharset),
-            b64 = MIMEFunctions.base64.encode(buf);
-        return MIMEFunctions._addSoftLinebreaks(b64, "base64");
+        var buf = mimeFunctions.charset.convert(str || "", fromCharset),
+            b64 = mimeFunctions.base64.encode(buf);
+        return mimeFunctions._addSoftLinebreaks(b64, "base64");
     },
 
     /**
@@ -104,8 +104,8 @@ var MIMEFunctions = {
      * @return {String} Decoded unicode string
      */
     base64Decode: function(str, fromCharset){
-        var buf = MIMEFunctions.base64.decode(str ||"", "arraybuffer");
-        return MIMEFunctions.charset.decode(buf, fromCharset);
+        var buf = mimeFunctions.base64.decode(str ||"", "arraybuffer");
+        return mimeFunctions.charset.decode(buf, fromCharset);
     },
 
     /**
@@ -118,7 +118,7 @@ var MIMEFunctions = {
      * @return {String} Mime encoded string
      */
     quotedPrintableEncode: function(str, fromCharset){
-        var mimeEncodedStr = MIMEFunctions.mimeEncode(str, fromCharset);
+        var mimeEncodedStr = mimeFunctions.mimeEncode(str, fromCharset);
 
         mimeEncodedStr = mimeEncodedStr.
             // fix line breaks, ensure <CR><LF>
@@ -131,7 +131,7 @@ var MIMEFunctions = {
             });
 
         // add soft line breaks to ensure line lengths sjorter than 76 bytes
-        return MIMEFunctions._addSoftLinebreaks(mimeEncodedStr, "qp");
+        return mimeFunctions._addSoftLinebreaks(mimeEncodedStr, "qp");
     },
 
     /**
@@ -147,7 +147,7 @@ var MIMEFunctions = {
 
         // remove soft line breaks
         str = str.replace(/\=(?:\r?\n|$)/g, "");
-        return MIMEFunctions.mimeDecode(str, fromCharset);
+        return mimeFunctions.mimeDecode(str, fromCharset);
     },
 
     /**
@@ -178,25 +178,25 @@ var MIMEFunctions = {
         }
 
         if(mimeWordEncoding == "Q"){
-            encodedStr = MIMEFunctions.mimeEncode(str, fromCharset);
+            encodedStr = mimeFunctions.mimeEncode(str, fromCharset);
             encodedStr = encodedStr.replace(/[\r\n\t_]/g, function(chr){
                 var code = chr.charCodeAt(0);
                 return "=" + (code<0x10?"0":"") + code.toString(16).toUpperCase();
             }).replace(/\s/g, "_");
         }else if(mimeWordEncoding == "B"){
-            encodedStr = typeof str == "string" ? str : MIMEFunctions.decode(str, fromCharset);
+            encodedStr = typeof str == "string" ? str : mimeFunctions.decode(str, fromCharset);
             maxLength = Math.max(3, (maxLength - maxLength % 4) / 4 * 3);
         }
 
         if(maxLength && encodedStr.length > maxLength){
             if(mimeWordEncoding == "Q"){
-                encodedStr = MIMEFunctions._splitMimeEncodedString(encodedStr, maxLength).join("?= =?"+toCharset+"?"+mimeWordEncoding+"?");
+                encodedStr = mimeFunctions._splitMimeEncodedString(encodedStr, maxLength).join("?= =?"+toCharset+"?"+mimeWordEncoding+"?");
             }else{
 
                 // RFC2047 6.3 (2) states that encoded-word must include an integral number of characters, so no chopping unicode sequences
                 parts = [];
                 for(i=0, len = encodedStr.length; i<len; i += maxLength){
-                    parts.push(MIMEFunctions.base64.encode(encodedStr.substr(i, maxLength)));
+                    parts.push(mimeFunctions.base64.encode(encodedStr.substr(i, maxLength)));
                 }
 
                 if(parts.length > 1){
@@ -206,7 +206,7 @@ var MIMEFunctions = {
                 }
             }
         }else if(mimeWordEncoding == "B"){
-            encodedStr = MIMEFunctions.base64.encode(encodedStr);
+            encodedStr = mimeFunctions.base64.encode(encodedStr);
         }
 
         return "=?"+toCharset+"?"+mimeWordEncoding+"?"+encodedStr+ (encodedStr.substr(-2)=="?="?"":"?=");
@@ -229,11 +229,11 @@ var MIMEFunctions = {
 
         maxLength = maxLength || 0;
 
-        var decodedValue = MIMEFunctions.charset.decode(MIMEFunctions.charset.convert((str || ""), fromCharset)),
+        var decodedValue = mimeFunctions.charset.decode(mimeFunctions.charset.convert((str || ""), fromCharset)),
             encodedValue;
 
         encodedValue = decodedValue.replace(/([^\s\u0080-\uFFFF]*[\u0080-\uFFFF]+[^\s\u0080-\uFFFF]*(?:\s+[^\s\u0080-\uFFFF]*[\u0080-\uFFFF]+[^\s\u0080-\uFFFF]*\s*)?)+/g, function(match){
-            return match.length ? MIMEFunctions.mimeWordEncode(match, mimeWordEncoding || "Q", maxLength) : "";
+            return match.length ? mimeFunctions.mimeWordEncode(match, mimeWordEncoding || "Q", maxLength) : "";
         });
 
         return encodedValue;
@@ -260,9 +260,9 @@ var MIMEFunctions = {
         str = (match[3] || "").replace(/_/g, " ");
 
         if(encoding == "B"){
-            return MIMEFunctions.base64Decode(str, fromCharset);
+            return mimeFunctions.base64Decode(str, fromCharset);
         }else if(encoding == "Q"){
-            return MIMEFunctions.mimeDecode(str, fromCharset);
+            return mimeFunctions.mimeDecode(str, fromCharset);
         }else{
             return str;
         }
@@ -280,7 +280,7 @@ var MIMEFunctions = {
         str = str.
             replace(/(=\?[^?]+\?[QqBb]\?[^?]+\?=)\s+(?==\?[^?]+\?[QqBb]\?[^?]+\?=)/g, "$1").
             replace(/\=\?([\w_\-]+)\?([QqBb])\?[^\?]+\?\=/g, function(mimeWord, charset, encoding){
-                return MIMEFunctions.mimeWordDecode(mimeWord);
+                return mimeFunctions.mimeWordDecode(mimeWord);
             });
 
         return str;
@@ -338,8 +338,8 @@ var MIMEFunctions = {
      * @return {String} encoded and folded header line
      */
     headerLineEncode: function(key, value, fromCharset){
-        var encodedValue = MIMEFunctions.mimeWordsEncode(value, "Q", 52, fromCharset);
-        return MIMEFunctions.foldLines(key+": "+encodedValue, 76);
+        var encodedValue = mimeFunctions.mimeWordsEncode(value, "Q", 52, fromCharset);
+        return mimeFunctions.foldLines(key+": "+encodedValue, 76);
     },
 
     /**
@@ -381,7 +381,7 @@ var MIMEFunctions = {
         }
 
         for(i=0, len = lines.length; i<len; i++){
-            header = MIMEFunctions.headerLineDecode(lines[i]);
+            header = mimeFunctions.headerLineDecode(lines[i]);
             key = (header.key || "").toString().toLowerCase().trim();
             value = header.value || "";
 
@@ -458,9 +458,9 @@ var MIMEFunctions = {
         encoding = (encoding || "base64").toString().toLowerCase().trim();
 
         if(encoding == "qp"){
-            return MIMEFunctions._addQPSoftLinebreaks(str, lineLengthMax);
+            return mimeFunctions._addQPSoftLinebreaks(str, lineLengthMax);
         }else{
-            return MIMEFunctions._addBase64SoftLinebreaks(str, lineLengthMax);
+            return mimeFunctions._addBase64SoftLinebreaks(str, lineLengthMax);
         }
     },
 
@@ -591,7 +591,7 @@ var MIMEFunctions = {
 /**
  * Character set encoding and decoding functions
  */
-MIMEFunctions.charset = {
+mimeFunctions.charset = {
 
     /**
      * Encodes an unicode string into an arraybuffer (Uint8Array) object as UTF-8
@@ -614,7 +614,7 @@ MIMEFunctions.charset = {
      * @return {String} Decded string
      */
     decode: function(arraybuffer, fromCharset){
-        fromCharset = MIMEFunctions.charset._normalizeCharset(fromCharset ||"UTF-8");
+        fromCharset = mimeFunctions.charset._normalizeCharset(fromCharset ||"UTF-8");
         return new TextDecoder(fromCharset).decode(arraybuffer);
     },
 
@@ -626,16 +626,16 @@ MIMEFunctions.charset = {
      * @return {Uint8Array} UTF-8 encoded arraybuffer
      */
     convert: function(str, fromCharset){
-        fromCharset = MIMEFunctions.charset._normalizeCharset(fromCharset || "UTF-8");
+        fromCharset = mimeFunctions.charset._normalizeCharset(fromCharset || "UTF-8");
         var bufString;
         if(typeof str != "string"){
             if(fromCharset.match(/^utf[\-_]?8$/)){
                 return str;
             }
-            bufString = MIMEFunctions.charset.decode(str, fromCharset);
-            return MIMEFunctions.charset.encode(bufString);
+            bufString = mimeFunctions.charset.decode(str, fromCharset);
+            return mimeFunctions.charset.encode(bufString);
         }
-        return MIMEFunctions.charset.encode(str);
+        return mimeFunctions.charset.encode(str);
     },
 
     /**
@@ -667,7 +667,7 @@ MIMEFunctions.charset = {
 /**
  * Base64 encoding and decoding functions
  */
-MIMEFunctions.base64 = {
+mimeFunctions.base64 = {
 
     /**
      * Encodes input into base64

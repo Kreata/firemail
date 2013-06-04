@@ -34,7 +34,7 @@
  * @param {Boolean} [options.disableEscaping] If set to true, do not escape dots on the beginning of the lines
  * @param {Number} [options.logLength=6] How many messages between the client and the server to log. Set to false to disable logging
  */
-function SMTPClient(host, port, options){
+function smtpClient(host, port, options){
 
     this.options = options || {};
 
@@ -100,7 +100,7 @@ function SMTPClient(host, port, options){
      * SMTP response parser object. All data coming from the downstream server
      * is feeded to this parser
      */
-    this._parser = new SMTPResponseParser();
+    this._parser = new smtpResponseParser();
 
     /**
      * If authenticated successfully, stores the username
@@ -153,31 +153,31 @@ function SMTPClient(host, port, options){
  *
  * @param {Error} err Error object
  */
-SMTPClient.prototype.onerror = function(err){};
+smtpClient.prototype.onerror = function(err){};
 
 /**
  * More data can be buffered in the socket. See `waitDrain` property or
  * check if `send` method returns false to see if you should be waiting
  * for the drain event. Before sending anything else.
  */
-SMTPClient.prototype.ondrain = function(){};
+smtpClient.prototype.ondrain = function(){};
 
 /**
  * The connection to the server has been closed
  */
-SMTPClient.prototype.onclose = function(){};
+smtpClient.prototype.onclose = function(){};
 
 /**
  * The connection is established and idle, you can send mail now
  */
-SMTPClient.prototype.onidle = function(){};
+smtpClient.prototype.onidle = function(){};
 
 /**
  * The connection is waiting for the mail body
  *
  * @param {Array} failedRecipients List of addresses that were not accepted as recipients
  */
-SMTPClient.prototype.onready = function(failedRecipients){};
+smtpClient.prototype.onready = function(failedRecipients){};
 
 /**
  * The mail has been sent. See `log.slice(-1)` for the exact response message.
@@ -185,7 +185,7 @@ SMTPClient.prototype.onready = function(failedRecipients){};
  *
  * @param {Boolean} success Indicates if the message was queued by the server or not
  */
-SMTPClient.prototype.ondone = function(success){};
+smtpClient.prototype.ondone = function(success){};
 
 // PUBLIC METHODS
 
@@ -194,7 +194,7 @@ SMTPClient.prototype.ondone = function(success){};
 /**
  * Initiate a connection to the server
  */
-SMTPClient.prototype.connect = function(){
+smtpClient.prototype.connect = function(){
     // only mozTCPSocket exists currently but you'll never know when it's going to change
     var socket = navigator.TCPSocket || navigator.mozTCPSocket;
 
@@ -215,7 +215,7 @@ SMTPClient.prototype.connect = function(){
 /**
  * Pauses `data` events from the downstream SMTP server
  */
-SMTPClient.prototype.suspend = function(){
+smtpClient.prototype.suspend = function(){
     if(this.socket && this.socket.readyState === "open"){
         this.socket.suspend();
     }
@@ -225,7 +225,7 @@ SMTPClient.prototype.suspend = function(){
  * Resumes `data` events from the downstream SMTP server. Be careful of not
  * resuming something that is not suspended - an error is thrown in this case
  */
-SMTPClient.prototype.resume = function(){
+smtpClient.prototype.resume = function(){
     if(this.socket && this.socket.readyState === "open"){
         this.socket.resume();
     }
@@ -234,7 +234,7 @@ SMTPClient.prototype.resume = function(){
 /**
  * Sends QUIT
  */
-SMTPClient.prototype.quit = function(){
+smtpClient.prototype.quit = function(){
     this._sendCommand("QUIT");
     this._currentAction = this.close;
 };
@@ -244,7 +244,7 @@ SMTPClient.prototype.quit = function(){
  *
  * @param {Object} [auth] Use this if you want to authenticate as another user
  */
-SMTPClient.prototype.reset = function(auth){
+smtpClient.prototype.reset = function(auth){
     this.options.auth = auth || this.options.auth;
     this._sendCommand("RSET");
     this._currentAction = this._actionRSET;
@@ -253,7 +253,7 @@ SMTPClient.prototype.reset = function(auth){
 /**
  * Closes the connection to the server
  */
-SMTPClient.prototype.close = function(){
+smtpClient.prototype.close = function(){
     if(this.socket && this.socket.readyState === "open"){
         this.socket.close();
     }else{
@@ -269,7 +269,7 @@ SMTPClient.prototype.close = function(){
  *
  * @param {Object} envelope Envelope object in the form of {from:"...", to:["..."]}
  */
-SMTPClient.prototype.useEnvelope = function(envelope){
+smtpClient.prototype.useEnvelope = function(envelope){
     this._envelope = envelope || {};
     this._envelope.from = [].concat(this._envelope.from || ("anonymous@"+this.options.name))[0];
     this._envelope.to = [].concat(this._envelope.to || []);
@@ -290,7 +290,7 @@ SMTPClient.prototype.useEnvelope = function(envelope){
  * @param {String} chunk ASCII string (quoted-printable, base64 etc.) to be sent to the server
  * @return {Boolean} If true, it is safe to send more data, if false, you *should* wait for the ondrain event before sending more
  */
-SMTPClient.prototype.send = function(chunk){
+smtpClient.prototype.send = function(chunk){
     // works only in data mode
     if(!this._dataMode){
         // this line should never be reached but if it does,
@@ -310,7 +310,7 @@ SMTPClient.prototype.send = function(chunk){
  *
  * @param {Buffer} [chunk] Chunk of data to be sent to the server
  */
-SMTPClient.prototype.end = function(chunk){
+smtpClient.prototype.end = function(chunk){
     // works only in data mode
     if(!this._dataMode){
         // this line should never be reached but if it does,
@@ -352,7 +352,7 @@ SMTPClient.prototype.end = function(chunk){
  * @event
  * @param {Event} evt Event object. Not used
  */
-SMTPClient.prototype._onOpen = function(evt){
+smtpClient.prototype._onOpen = function(evt){
     this.socket.ondata = this._onData.bind(this);
 
     this.socket.onclose = this._onClose.bind(this);
@@ -369,7 +369,7 @@ SMTPClient.prototype._onOpen = function(evt){
  * @event
  * @param {Event} evt Event object. See `evt.data` for the chunk received
  */
-SMTPClient.prototype._onData = function(evt){
+smtpClient.prototype._onData = function(evt){
     var stringPayload = new TextDecoder("UTF-8").decode(Uint8Array(evt.data));
     this._log("SERVER", stringPayload);
     this._parser.send(stringPayload);
@@ -381,7 +381,7 @@ SMTPClient.prototype._onData = function(evt){
  * @event
  * @param {Event} evt Event object. Not used
  */
-SMTPClient.prototype._onDrain = function(evt){
+smtpClient.prototype._onDrain = function(evt){
     this.waitDrain = false;
     this.ondrain();
 };
@@ -392,7 +392,7 @@ SMTPClient.prototype._onDrain = function(evt){
  * @event
  * @param {Event} evt Event object. See evt.data for the error
  */
-SMTPClient.prototype._onError = function(evt){
+smtpClient.prototype._onError = function(evt){
     if(evt instanceof Error){
         this.onerror(evt);
     }else if(evt.data instanceof Error){
@@ -410,7 +410,7 @@ SMTPClient.prototype._onError = function(evt){
  * @event
  * @param {Event} evt Event object. Not used
  */
-SMTPClient.prototype._onClose = function(evt){
+smtpClient.prototype._onClose = function(evt){
     this._destroy();
 };
 
@@ -421,14 +421,14 @@ SMTPClient.prototype._onClose = function(evt){
  * @event
  * @param {Object} command Parsed data
  */
-SMTPClient.prototype._onCommand = function(command){
+smtpClient.prototype._onCommand = function(command){
     this._currentAction.call(this, command);
 };
 
 /**
  * Ensures that the connection is closed and such
  */
-SMTPClient.prototype._destroy = function(){
+smtpClient.prototype._destroy = function(){
     if(!this.destroyed){
         this.destroyed = true;
         this.onclose();
@@ -442,7 +442,7 @@ SMTPClient.prototype._destroy = function(){
  * @param {String} data Data that is being sent
  * @param {Boolean} binary If set to true, do not log the entire message but only the length of it in bytes
  */
-SMTPClient.prototype._log = function(sender, data, binary){
+smtpClient.prototype._log = function(sender, data, binary){
     if(this._logLength){
         this.log.push({sender: sender, data: !binary ? data || "" :
             "<"+TextEncoder("utf-8").encode(data || "").length+" bytes of data>"});
@@ -458,7 +458,7 @@ SMTPClient.prototype._log = function(sender, data, binary){
  * @param {String} chunk ASCII string (quoted-printable, base64 etc.) to be sent to the server
  * @return {Boolean} If true, it is safe to send more data, if false, you *should* wait for the ondrain event before sending more
  */
-SMTPClient.prototype._sendString = function(chunk){
+smtpClient.prototype._sendString = function(chunk){
     // escape dots
     if(!this.options.disableEscaping){
         chunk = chunk.replace(/\n\./g, "\n..");
@@ -486,7 +486,7 @@ SMTPClient.prototype._sendString = function(chunk){
  *
  * @param {String} str String to be sent to the server
  */
-SMTPClient.prototype._sendCommand = function(str){
+smtpClient.prototype._sendCommand = function(str){
     this._log("CLIENT", str);
     this.waitDrain = this.socket.send(new TextEncoder("UTF-8").encode(str + (str.substr(-2) != "\r\n" ? "\r\n" : "")).buffer);
 };
@@ -494,7 +494,7 @@ SMTPClient.prototype._sendCommand = function(str){
 /**
  * Intitiate authentication sequence if needed
  */
-SMTPClient.prototype._authenticateUser = function(){
+smtpClient.prototype._authenticateUser = function(){
 
     if(!this.options.auth){
         // no need to authenticate, at least no data given
@@ -546,7 +546,7 @@ SMTPClient.prototype._authenticateUser = function(){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionGreeting = function(command){
+smtpClient.prototype._actionGreeting = function(command){
     if(command.statusCode != 220){
         this._onError(new Error("Invalid greeting from server - " + command.line));
         return;
@@ -561,7 +561,7 @@ SMTPClient.prototype._actionGreeting = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionEHLO = function(command){
+smtpClient.prototype._actionEHLO = function(command){
     var match;
 
     if(!command.success){
@@ -594,7 +594,7 @@ SMTPClient.prototype._actionEHLO = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionHELO = function(command){
+smtpClient.prototype._actionHELO = function(command){
     if(!command.success){
         this._onError(new Error("Invalid response for EHLO/HELO - " + command.line));
         return;
@@ -607,7 +607,7 @@ SMTPClient.prototype._actionHELO = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionAUTH_LOGIN_USER = function(command){
+smtpClient.prototype._actionAUTH_LOGIN_USER = function(command){
     if(command.statusCode != 334  || command.data != "VXNlcm5hbWU6"){
         this._onError(new Error("Invalid login sequence while waiting for '334 VXNlcm5hbWU6' - " + command.line));
         return;
@@ -621,7 +621,7 @@ SMTPClient.prototype._actionAUTH_LOGIN_USER = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionAUTH_LOGIN_PASS = function(command){
+smtpClient.prototype._actionAUTH_LOGIN_PASS = function(command){
     if(command.statusCode != 334  || command.data != "UGFzc3dvcmQ6"){
         this._onError(new Error("Invalid login sequence while waiting for '334 UGFzc3dvcmQ6' - " + command.line));
         return;
@@ -636,7 +636,7 @@ SMTPClient.prototype._actionAUTH_LOGIN_PASS = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionAUTHComplete = function(command){
+smtpClient.prototype._actionAUTHComplete = function(command){
     if(!command.success){
         this._onError(new Error("Invalid login - " + command.line));
         return;
@@ -653,7 +653,7 @@ SMTPClient.prototype._actionAUTHComplete = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionIdle = function(command){
+smtpClient.prototype._actionIdle = function(command){
     if(command.statusCode > 300){
         this._onError(new Error(command.line));
         return;
@@ -667,7 +667,7 @@ SMTPClient.prototype._actionIdle = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionMAIL = function(command){
+smtpClient.prototype._actionMAIL = function(command){
     if(!command.success){
         this._onError(new Error("Mail from command failed - " + command.line));
         return;
@@ -689,7 +689,7 @@ SMTPClient.prototype._actionMAIL = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionRCPT = function(command){
+smtpClient.prototype._actionRCPT = function(command){
     if(!command.success){
         // this is a soft error
         this._envelope.rcptFailed.push(this._envelope.curRecipient);
@@ -717,7 +717,7 @@ SMTPClient.prototype._actionRCPT = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionRSET = function(command){
+smtpClient.prototype._actionRSET = function(command){
     if(!command.success){
         this._onError(new Error("Reset command failed - " + command.line));
         return;
@@ -733,7 +733,7 @@ SMTPClient.prototype._actionRSET = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionDATA = function(command){
+smtpClient.prototype._actionDATA = function(command){
     // response should be 354 but according to this issue https://github.com/eleith/emailjs/issues/24
     // some servers might use 250 instead
     if([250, 354].indexOf(command.statusCode) < 0){
@@ -752,7 +752,7 @@ SMTPClient.prototype._actionDATA = function(command){
  *
  * @param {Object} command Parsed command from the server {statusCode, data, line}
  */
-SMTPClient.prototype._actionStream = function(command){
+smtpClient.prototype._actionStream = function(command){
     this._currentAction = this._actionIdle;
 
     if(!command.success){
