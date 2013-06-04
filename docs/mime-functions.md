@@ -24,11 +24,11 @@ Include files [address-parser.js](mime-functions/address-parser.js) and [mime-fu
 Folds a long line according to the RFC 5322 <http://tools.ietf.org/html/rfc5322#section-2.1.1>
 
     MIMEFunctions.foldLines(str [, lineLengthMax[, afterSpace]]) -> String
-    
+
   * **str** - String to be folded
   * **lineLengthMax** - Maximum length of a line (defaults to 76)
   * **afterSpace** - If true, leave a space in th end of a line
- 
+
 For example:
 
     MIMEFunctions.foldLines("Content-Type: multipart/alternative; boundary=\"----zzzz----\"")
@@ -48,7 +48,7 @@ Encodes a string into mime encoded word format <http://en.wikipedia.org/wiki/MIM
   * **mimeWordEncoding** - Encoding for the mime word, either Q or B (default is "Q")
   * **maxLength** - If set, split mime words into several chunks if needed
   * **fromCharset** - If the first parameter is an arraybuffer, use this encoding to decode the value to unicode
-  
+
 For example:
 
     MIMEFunctions.mimeWordEncode("See on õhin test", "Q");
@@ -56,13 +56,13 @@ For example:
 Becomes with UTF-8 and Quoted-printable encoding
 
     =?UTF-8?Q?See_on_=C3=B5hin_test?=
-    
+
 ### mimeWordDecode
 
 Decodes a string from mime encoded word format (see also `mimeWordEncode`)
 
     MIMEFunctions.mimeWordDecode(str) -> String
-    
+
   * **str** - String to be decoded
 
 For example
@@ -79,7 +79,7 @@ Encodes a string into Quoted-printable format (see also `quotedPrintableDecode`)
 length for the generated string is 76 + 2 bytes.
 
     MIMEFunctions.quotedPrintableEncode(str [, fromCharset]) -> String
-    
+
   * **str** - String or an arraybuffer to mime encode
   * **fromCharset** - If the first parameter is an arraybuffer, use this charset to decode the value to unicode before encoding
 
@@ -88,17 +88,17 @@ length for the generated string is 76 + 2 bytes.
 Decodes a string from Quoted-printable format  (see also `quotedPrintableEncode`).
 
     MIMEFunctions.quotedPrintableDecode(str [, fromCharset]) -> String
-    
+
   * **str** - Mime encoded string
   * **fromCharset** - Use this charset to decode mime encoded string to unicode
-  
+
 ### base64Encode
 
 Encodes a string into Base64 format (see also `base64Decode`). Maximum line
 length for the generated string is 76 + 2 bytes.
 
     MIMEFunctions.base64Encode(str [, fromCharset]) -> String
-    
+
   * **str** - String or an arraybuffer to base64 encode
   * **fromCharset** - If the first parameter is an arraybuffer, use this charset to decode the value to unicode before encoding
 
@@ -107,7 +107,7 @@ length for the generated string is 76 + 2 bytes.
 Decodes a string from Base64 format  (see also `base64Encode`).
 
     MIMEFunctions.base64Decode(str [, fromCharset]) -> String
-    
+
   * **str** Base64 encoded string
   * **fromCharset** Use this charset to decode base64 encoded string to unicode
 
@@ -161,7 +161,7 @@ Encodes and folds a header line for a MIME message header. Shorthand for `mimeWo
 
 ### headerLineDecode
 
-Unfolds a header line and splits it to key and value pair. The return value is in the form of `{key: "subject", value: "test"}`. The value is not mime word decoded, you need to do your own decoding based on the rules for the specific header key. 
+Unfolds a header line and splits it to key and value pair. The return value is in the form of `{key: "subject", value: "test"}`. The value is not mime word decoded, you need to do your own decoding based on the rules for the specific header key.
 
     MIMEFunctions.headerLineDecode(headerLine) -> Object
 
@@ -169,7 +169,7 @@ Unfolds a header line and splits it to key and value pair. The return value is i
 
 ### headerLinesDecode
 
-Parses a block of header lines. Does not decode mime words as every header 
+Parses a block of header lines. Does not decode mime words as every header
 might have its own rules (eg. formatted email addresses and such).
 
 Return value is an object of headers, where header keys are object keys. NB! Several values with the same key make up an array of values for the same key.

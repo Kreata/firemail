@@ -28,6 +28,7 @@ Open the application in the simulator. The launch page is a [nodeunit](https://g
 
   * [MIME Functions](docs/mime-functions.md)
   * [SMTP Client](docs/smtp-client.md)
+  * [MIME Types](docs/mime-types.md)
 
 ## License
 
