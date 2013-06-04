@@ -1,6 +1,6 @@
 this.mimeTypesTests = {
 
-    'Exact match for an extension': function (test) {
+    'Exact match for an extension': function(test) {
         var extension = "doc",
             contentType = "application/msword";
 
@@ -8,7 +8,7 @@ this.mimeTypesTests = {
         test.done();
     },
 
-    'Exact match for a content type': function (test) {
+    'Exact match for a content type': function(test) {
         var extension = "doc",
             contentType = "application/msword";
 
@@ -16,7 +16,7 @@ this.mimeTypesTests = {
         test.done();
     },
 
-    'Best match for an extension': function (test) {
+    'Best match for an extension': function(test) {
         var extension = "js",
             contentType = "application/javascript";
 
@@ -24,7 +24,7 @@ this.mimeTypesTests = {
         test.done();
     },
 
-    'Best match for a content type': function (test) {
+    'Best match for a content type': function(test) {
         var extension = "jpeg",
             contentType = "image/jpeg";
 

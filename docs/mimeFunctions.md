@@ -10,12 +10,19 @@ All input can use any charset (in this case, the value must not be a string but 
 
 ## Usage
 
-Include files [addressParser.js](mimeFunctions/addressParser.js) and [mimeFunctions.js](mimeFunctions/mimeFunctions.js) on the page.
+### AMD
+
+Either require [firemail.js](../firemail.js) and use `firemail.mimeFunctions` or require [mimeFunctions.js](../lib/mimeFunctions/mimeFunctions.js) as `mimeFunctions`
+
+### Global context
+
+Include file [mimeFunctions.js](../lib/mimeFunctions/mimeFunctions.js) on the page.
 
 ```html
-<script src="addressParser.js"></script>
 <script src="mimeFunctions.js"></script>
 ```
+
+This exposes global variable `mimeFunctions`
 
 ## Methods
 

@@ -1,7 +1,7 @@
 this.smtpClientTests= {
 
-    'Create smtpClient object': function (test) {
-        var client = new smtpClient();
+    'Create smtpClient object': function(test) {
+        var client = smtpClient();
         test.ok(true, client instanceof smtpClient);
         test.done();
     },
@@ -9,7 +9,7 @@ this.smtpClientTests= {
     'Connect to and disconnect from a testserver': function(test){
         test.expect(2);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
         client.connect();
 
         client.onidle = function(){
@@ -30,7 +30,7 @@ this.smtpClientTests= {
     'Disconnect with QUIT': function(test){
         test.expect(2);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
         client.connect();
 
         client.onidle = function(){
@@ -51,7 +51,7 @@ this.smtpClientTests= {
     'Authenticate with default method': function(test){
         test.expect(2);
 
-        var client = new smtpClient("localhost", 1025, {
+        var client = smtpClient("localhost", 1025, {
             auth: {
                 user: "testuser",
                 pass: "testpass"
@@ -78,7 +78,7 @@ this.smtpClientTests= {
     'Authenticate using PLAIN': function(test){
         test.expect(2);
 
-        var client = new smtpClient("localhost", 1025, {
+        var client = smtpClient("localhost", 1025, {
             auth: {
                 user: "testuser",
                 pass: "testpass"
@@ -106,7 +106,7 @@ this.smtpClientTests= {
     'Authenticate using LOGIN': function(test){
         test.expect(2);
 
-        var client = new smtpClient("localhost", 1025, {
+        var client = smtpClient("localhost", 1025, {
             auth: {
                 user: "testuser",
                 pass: "testpass"
@@ -134,7 +134,7 @@ this.smtpClientTests= {
     'Authenticate with invalid data': function(test){
         test.expect(2);
 
-        var client = new smtpClient("localhost", 1025, {
+        var client = smtpClient("localhost", 1025, {
             auth: {
                 user: "testuser1",
                 pass: "testpass1"
@@ -162,7 +162,7 @@ this.smtpClientTests= {
     'MAIL FROM fails': function(test){
         test.expect(3);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -191,7 +191,7 @@ this.smtpClientTests= {
     'RCPT TO: fails (no recipients)': function(test){
         test.expect(3);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -220,7 +220,7 @@ this.smtpClientTests= {
     'RCPT TO: fails (invalid recipient)': function(test){
         test.expect(3);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -249,7 +249,7 @@ this.smtpClientTests= {
     'RCPT TO: success': function(test){
         test.expect(3);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -283,7 +283,7 @@ this.smtpClientTests= {
     'RCPT TO: success with some failures': function(test){
         test.expect(3);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -317,7 +317,7 @@ this.smtpClientTests= {
     'DATA: success': function(test){
         test.expect(4);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -361,7 +361,7 @@ this.smtpClientTests= {
     'DATA: success with dots': function(test){
         test.expect(4);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -404,7 +404,7 @@ this.smtpClientTests= {
     'Idle after sending message': function(test){
         test.expect(5);
 
-        var client = new smtpClient("localhost", 1025);
+        var client = smtpClient("localhost", 1025);
 
         client.connect();
 
@@ -453,7 +453,7 @@ this.smtpClientTests= {
         test.expect(2);
 
         // Self signed certificates are not supported, so we need a trusted secure server
-        var client = new smtpClient("smtp.gmail.com", 465, {useSSL: true});
+        var client = smtpClient("smtp.gmail.com", 465, {useSSL: true});
         client.connect();
 
         client.onidle = function(){

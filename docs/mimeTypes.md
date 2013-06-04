@@ -6,13 +6,21 @@
 
 ## Usage
 
-Include files [mimeTypes.js](mimeFunctions/mimeTypes.js), [listMimeTypes.js](mimeFunctions/listMimeTypes.js) and [listExtensions.js](mimeFunctions/listExtensions.js) on the page.
+### AMD
+
+Either require [firemail.js](../firemail.js) and use `firemail.mimeTypes` or require [mimeTypes.js](../lib/mimeFunctions/mimeTypes.js) as `mimeTypes`
+
+### Global context
+
+Include files [mimeTypeList.js](../lib/mimeFunctions/mimeTypeList.js), [extensionList.js](../lib/mimeFunctions/extensionList.js) and [mimeTypes.js](../lib/mimeFunctions/mimeTypes.js) on the page.
 
 ```html
 <script src="mimeTypes.js"></script>
-<script src="listMimeTypes.js"></script>
-<script src="listExtensions.js"></script>
+<script src="mimeTypeList.js"></script>
+<script src="extensionList.js"></script>
 ```
+
+This exposes global variable `mimeTypes`
 
 ## Methods
 

@@ -1,4 +1,4 @@
-this.addressParserTests= {
+this.addressParserTests = {
     "Single address": function(test){
         var input = "andris@tr.ee",
             expected = [{address:"andris@tr.ee", name:""}];

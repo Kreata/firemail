@@ -1,19 +1,19 @@
 this.smtpResponseParserTests= {
 
-    'Create smtpResponseParser object': function (test) {
+    'Create smtpResponseParser object': function(test) {
         var parser = new smtpResponseParser();
         test.ok(true, parser instanceof smtpResponseParser);
         test.done();
     },
 
-    'Write data to parser': function (test) {
+    'Write data to parser': function(test) {
         var parser = new smtpResponseParser();
         parser.send("test");
         test.equal("test", parser._remainder);
         test.done();
     },
 
-    'Events: ondata': function (test) {
+    'Events: ondata': function(test) {
         test.expect(1);
 
         var line = "250 1.2.3 test",
@@ -46,7 +46,7 @@ this.smtpResponseParserTests= {
         parser.send(line + "\r\n");
     },
 
-    'Events: ondata, onend': function (test) {
+    'Events: ondata, onend': function(test) {
         test.expect(1);
 
         var line = "250 1.2.3 test",
@@ -79,7 +79,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Events: ondata, onend, write one byte at a time': function (test) {
+    'Events: ondata, onend, write one byte at a time': function(test) {
         test.expect(2);
 
         var lines = ["250 1.2.3 test", "252 pest"],
@@ -112,7 +112,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Multi line response': function (test) {
+    'Multi line response': function(test) {
         test.expect(1);
 
         var lines = ["250-test1", "250-test2 test3", "250 test4"],
@@ -145,7 +145,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Mixed single and multi line responses': function (test) {
+    'Mixed single and multi line responses': function(test) {
         test.expect(3);
 
         var lines = [
@@ -196,7 +196,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Events: onerror, invalid line': function (test) {
+    'Events: onerror, invalid line': function(test) {
         test.expect(2);
 
         var line = "nostatus",
@@ -229,7 +229,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Events: onerror, closed stream, no write': function (test) {
+    'Events: onerror, closed stream, no write': function(test) {
         test.expect(1);
 
         var parser = new smtpResponseParser();
@@ -244,7 +244,7 @@ this.smtpResponseParserTests= {
         parser.send("250 test1\r\n");
     },
 
-    'Events: onerror, closed stream, no end': function (test) {
+    'Events: onerror, closed stream, no end': function(test) {
         test.expect(1);
 
         var parser = new smtpResponseParser();
@@ -259,7 +259,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Invalid line break &lt;LF&gt;': function (test) {
+    'Invalid line break &lt;LF&gt;': function(test) {
         test.expect(3);
 
         var lines = [
@@ -310,7 +310,7 @@ this.smtpResponseParserTests= {
         parser.end();
     },
 
-    'Response success false': function (test) {
+    'Response success false': function(test) {
         test.expect(1);
 
         var line = "150 1.2.3 test",

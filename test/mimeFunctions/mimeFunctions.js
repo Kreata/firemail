@@ -1,6 +1,6 @@
 this.mimeFunctionsTests = {
 
-    'mimeEncode UTF-8': function (test) {
+    'mimeEncode UTF-8': function(test) {
         var str = "tere ÕÄÖÕ",
             encodedStr = "tere =C3=95=C3=84=C3=96=C3=95";
 
@@ -8,7 +8,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'mimeEncode non UTF-8': function (test) {
+    'mimeEncode non UTF-8': function(test) {
         var buf = new Uint8Array([0xBD, 0xC5]),
             encoding = "ks_c_5601-1987",
             encodedStr = "=EC=8B=A0";
@@ -17,7 +17,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'mimeDecode UTF-8': function (test) {
+    'mimeDecode UTF-8': function(test) {
         var str = "tere ÕÄÖÕ",
             encodedStr = "tere =C3=95=C3=84=C3=96=C3=95";
 
@@ -25,7 +25,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'mimeDecode non UTF-8': function (test) {
+    'mimeDecode non UTF-8': function(test) {
         var str = "신",
             encoding = "ks_c_5601-1987",
             encodedStr = "=BD=C5";
@@ -34,7 +34,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'base64Encode UTF-8': function (test) {
+    'base64Encode UTF-8': function(test) {
         var str = "tere ÕÄÖÕ",
             encodedStr = "dGVyZSDDlcOEw5bDlQ==";
 
@@ -42,7 +42,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'base64Encode non UTF-8': function (test) {
+    'base64Encode non UTF-8': function(test) {
         var buf = new Uint8Array([0xBD, 0xC5]),
             encoding = "ks_c_5601-1987",
             encodedStr = "7Iug";
@@ -51,7 +51,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'base64Decode UTF-8': function (test) {
+    'base64Decode UTF-8': function(test) {
         var str = "tere ÕÄÖÕ",
             encodedStr = "dGVyZSDDlcOEw5bDlQ==";
 
@@ -59,7 +59,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'base64Decode non UTF-8': function (test) {
+    'base64Decode non UTF-8': function(test) {
         var str = "신",
             encoding = "ks_c_5601-1987",
             encodedStr = "vcU=";
@@ -68,7 +68,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'quotedPrintableEncode UTF-8': function (test) {
+    'quotedPrintableEncode UTF-8': function(test) {
         var str = "tere ÕÄ \t\nÕÄ \t\nÖÕ",
             encodedStr = "tere =C3=95=C3=84=20=09\r\n=C3=95=C3=84=20=09\r\n=C3=96=C3=95";
 
@@ -76,7 +76,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'quotedPrintableDecode UTF-8': function (test) {
+    'quotedPrintableDecode UTF-8': function(test) {
         var str = "tere ÕÄ \t\r\nÕÄ \t\r\nÖÕ",
             encodedStr = "tere =C3=95=C3=84=20=09\r\n=C3=95=\r\n=C3=84=\r\n=20=09\r\n=C3=96=C3=95=";
 
@@ -84,7 +84,7 @@ this.mimeFunctionsTests = {
         test.done();
     },
 
-    'quotedPrintableEncode add soft line breaks': function (test) {
+    'quotedPrintableEncode add soft line breaks': function(test) {
         var str = "õäöüõäöüõäöüõäöüõäöüõäöüõäöõ",
             encodedStr = "=C3=B5=C3=A4=C3=B6=C3=BC=C3=B5=C3=A4=C3=B6=C3=BC=C3=B5=C3=A4=C3=B6=C3=BC=\r\n"+
                          "=C3=B5=C3=A4=C3=B6=C3=BC=C3=B5=C3=A4=C3=B6=C3=BC=C3=B5=C3=A4=C3=B6=C3=BC=\r\n"+

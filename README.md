@@ -26,9 +26,16 @@ Open the application in the simulator. The launch page is a [nodeunit](https://g
 
 ## Index
 
-  * [MIME Functions](docs/mimeFunctions.md)
-  * [SMTP Client](docs/smtpClient.md)
-  * [MIME Types](docs/mimeTypes.md)
+**firemail** can be used as a AMD module. You can load the files separately or all in one bunch
+by requireing [firemail.js](firemail.js). If you load the files with no AMD support, globals
+will be used instead.
+
+**firemail** exposes the following objects.
+
+  * [smtpClient](docs/smtpClient.md)
+  * [mimeFunctions](docs/mimeFunctions.md)
+  * [mimeTypes](docs/mimeTypes.md)
+  * [addressParser](docs/addressParser.md)
 
 ## License
 

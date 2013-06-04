@@ -11,6 +11,12 @@ SMTP Client allows you to connect to and stream data to a SMTP server
 
 ## Usage
 
+### AMD
+
+Either require [firemail.js](../firemail.js) and use `firemail.smtpClient` or require [smtpClient.js](../lib/smtpClient/smtpClient.js) as `smtpClient`
+
+### Global context
+
 Include files [smtpResponseParser.js](smtpClient/smtpResponseParser.js) and [smtpClient.js](smtpClient/smtpClient.js) on the page.
 
 ```html
@@ -18,10 +24,14 @@ Include files [smtpResponseParser.js](smtpClient/smtpResponseParser.js) and [smt
 <script src="smtpClient.js"></script>
 ```
 
+This exposes global variable `smtpClient`
+
+## API
+
 Create smtpClient object with:
 
 ```javascript
-var client = new smtpClient(host, port, options)
+var client = smtpClient(host, port, options)
 ```
 
 where
