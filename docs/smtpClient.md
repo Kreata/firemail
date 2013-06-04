@@ -17,7 +17,7 @@ Either require [firemail.js](../firemail.js) and use `firemail.smtpClient` or re
 
 ### Global context
 
-Include files [smtpResponseParser.js](../lib/ssmtpClient/smtpResponseParser.js) and [smtpClient.js](../lib/smtpClient/smtpClient.js) on the page.
+Include files [smtpResponseParser.js](../lib/smtpClient/smtpResponseParser.js) and [smtpClient.js](../lib/smtpClient/smtpClient.js) on the page.
 
 ```html
 <script src="smtpResponseParser.js"></script>
