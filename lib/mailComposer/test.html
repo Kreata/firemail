@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>mailComposer test</title>
+        <script src="../../example/require.js"></script>
+        <script>
+        require(["./mailComposer"], function(mailComposer) {
+            var mc = mailComposer();
+
+            mc.setHeader("subject", "test message")
+
+            mc.setTextBody("hello world");
+            mc.setHTMLBody("<p><b>hello</b> world!</p>");
+            mc.addAttachment({a: 1, cid: 1});
+            mc.addAttachment({a: 2});
+            mc.addAttachment({a: 3});
+            mc.addAttachment({a: 4, cid: 1});
+
+            var s = "";
+            mc.ondata = function(chunk){
+                s+=chunk;
+            }
+
+            mc.onend = function(){
+                console.log(s);
+            }
+
+            console.log("TEXT AND HTML AND 4 ATTACHMENTS")
+            console.log(JSON.stringify(mc._buildBodyTree()))
+            console.log(JSON.stringify(mc._flattenBodyTree()));
+            console.log(JSON.stringify(mc.stream()));
+        });
+        </script>
+    </head>
+    <body>
+        <h1>test</h1>
+    </body>
+</html>

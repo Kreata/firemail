@@ -1,0 +1,1 @@
+[punycode](http://tools.ietf.org/html/rfc5891) implementation from [bestiejs/punycode.js](https://github.com/bestiejs/punycode.js) (v1.2.2)
