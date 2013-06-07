@@ -36,6 +36,7 @@ will be used instead.
   * [mimeFunctions](docs/mimeFunctions.md)
   * [mimeTypes](docs/mimeTypes.md)
   * [addressParser](docs/addressParser.md)
+  * [mailComposer](docs/mailComposer.md)
 
 ## License
 

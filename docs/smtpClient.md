@@ -28,7 +28,7 @@ This exposes global variable `smtpClient`
 
 ## API
 
-Create smtpClient object with:
+Create `smtpClient` object with:
 
 ```javascript
 var client = smtpClient(host, port, options)
@@ -59,7 +59,7 @@ Once a connection is set up the following events can be listened to:
   * **onready** `(failedRecipients)` - the envelope is passed successfully to the server and a message stream can be started. The argument is an array of e-mail addresses not accepted as recipients by the server. If none of the recipient addresses is accepted, `onerror` is emitted instead.
   * **ondone** `(success)` - the message was sent
   * **onerror** `(err)` - An error occurred. The connection will be closed shortly afterwards, so expect an `onclose` event as well
-  * **onend** - connection to the client is closed
+  * **onclose** - connection to the client is closed
 
 Example:
 
