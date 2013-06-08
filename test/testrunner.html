@@ -11,6 +11,7 @@
     <script src="../lib/mimeFunctions/mimeTypeList.js"></script>
     <script src="../lib/mimeFunctions/extensionList.js"></script>
     <script src="../lib/mimeFunctions/mimeTypes.js"></script>
+    <script src="../lib/punycode/punycode.js"></script>
     <script src="../lib/mailComposer/mailComposer.js"></script>
 
     <script src="smtpClient/smtpResponseParser.js"></script>
@@ -20,6 +21,7 @@
     <script src="mimeFunctions/charset.js"></script>
     <script src="mimeFunctions/mimeFunctions.js"></script>
     <script src="mimeFunctions/mimeTypes.js"></script>
+    <script src="mailComposer/mailComposer.js"></script>
 
   </head>
   <body>
@@ -31,7 +33,8 @@
         'base64': Base64Tests,
         'charset': CharsetTests,
         'mimeFunctions': mimeFunctionsTests,
-        'mimeTypes': mimeTypesTests
+        'mimeTypes': mimeTypesTests,
+        'mailComposer': mailComposerTests
       });
     </script>
   </body>
