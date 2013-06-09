@@ -94,6 +94,13 @@ or
         content: "hello world!"
     });
 
+
+### stream
+
+Run after the message has been set up. Starts streaming of the message.
+
+    mailComposer.stream()
+
 ### suspend
 
 Suspends emitting any more `ondata` events until resumed. Use this when 
