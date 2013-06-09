@@ -19,6 +19,13 @@ this.mailComposerTests = {
         test.done();
     },
 
+    'bodyTree: attachment': function(test){
+        var mc = mailComposer();
+        mc.addAttachment({content: "test"});
+        test.deepEqual(mc._buildBodyTree(), {"attachment":{"content":"test"}});
+        test.done();
+    },
+
     'bodyTree: plaintext and html': function(test){
         var mc = mailComposer();
         mc.setHTMLBody("html");
@@ -113,7 +120,61 @@ this.mailComposerTests = {
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"multipart/alternative","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"contentType":"multipart/related","multipart":true,"childNodes":[{"contentType":"text/html","content":"html"},{"attachment":{"content":"test","contentId":"test"}}]}]},{"attachment":{"content":"test"}}]});
         test.done();
+    },
+
+    flattenBodyTree: function(test){
+        var mc = mailComposer();
+        mc.setTextBody("test");
+        mc.setHTMLBody("test");
+        mc.addAttachment({content: "test"});
+        mc.addAttachment({content: "test", contentId: "test"});
+        test.deepEqual(mc._flattenBodyTree(), [{"boundary":0,"contentType":"multipart/mixed","multipart":true,"boundaryOpen":1},{"boundary":1,"contentType":"multipart/alternative","multipart":true,"boundaryOpen":2},{"boundary":2,"contentType":"text/plain","content":"text"},{"boundary":2,"contentType":"multipart/related","multipart":true,"boundaryOpen":3},{"boundary":3,"contentType":"text/html","content":"html"},{"boundary":3,"attachment":{"content":"test","contentId":"test"}},{"boundaryClose":3},{"boundaryClose":2},{"boundary":1,"attachment":{"content":"test"}},{"boundaryClose":1}]);
+        test.done();
+    },
+
+    'pause and resume': function(test){
+        var mc = mailComposer(),
+            paused = true;
+        mc.setTextBody("test");
+        mc.setHTMLBody("test");
+        mc.addAttachment({content: "test"});
+        mc.addAttachment({content: "test", contentId: "test"});
+
+        mc.ondata = function(chunk){
+            test.ok(!paused);
+            mc.suspend();
+            paused = true;
+            setTimeout(function(){
+                paused = false;
+                mc.resume();
+            }, 20);
+        };
+
+        mc.onend = function(){
+            test.done();
+        };
+
+        mc.suspend();
+        mc.stream();
+
+        setTimeout(function(){
+            paused = false;
+            mc.resume();
+        }, 20);
+    },
+
+    'generateHeader': function(test){
+        var mc = mailComposer();
+        mc.setHeader("test1", "abc");
+        mc.setHeader("test2", "def");
+        mc.setHeader("test3", "def");
+        mc.setHeader("test3", ["ghi", "jkl"]);
+        test.deepEqual(mc._generateHeader(), "Test3: jkl\r\n"+
+                                             "Test3: ghi\r\n"+
+                                             "Test2: def\r\n"+
+                                             "Test1: abc\r\n"+
+                                             "MIME-Version: 1.0");
+        test.done();
     }
 
-
-}
+};
