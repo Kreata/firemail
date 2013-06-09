@@ -30,7 +30,7 @@ If you want to set multiple values for the same key, use an array as the value.
 
     mailComposer.setHeader(key, value)
 
-  * **key** - String to be folded
+  * **key** - Header key
   * **value** - Either a string value or an array of string values for the key
 
 For example:
@@ -72,13 +72,19 @@ For embedded images, use `contentId` property
 
 Attachment object has the following options:
 
-  * **attachment.contentDisposition** optional, defaults to `"attachment"`
-  * **attachment.contentId** - optional, use with embedded images (`cid:` urls)
-  * **attachment.contentType** - optional, if not set will be detected by `fileName`
-  * **attachment.fileName** - optional file name
-  * **attachment.content** - either a string or an arraybuffer (Uint8Array)
+  * **contentDisposition** optional, defaults to `"attachment"`
+  * **contentId** - optional, use with embedded images (`cid:` urls)
+  * **contentType** - optional, if not set will be detected by `fileName`
+  * **fileName** - optional file name
+  * **content** - either a string or an arraybuffer (Uint8Array)
 
 For example:
+
+    mailComposer.addAttachment({
+        content: "hello world!"
+    });
+
+or
 
     mailComposer.addAttachment({
         contentDisposition: "attachment",
