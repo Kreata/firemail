@@ -96,13 +96,14 @@ or
 
 ### suspend
 
-Suspends emitting any more ondata events until resumed.
+Suspends emitting any more `ondata` events until resumed. Use this when 
+writing to downstream returns false.
 
     mailComposer.suspend()
 
 ### resume
 
-Resumes suspended ondata events.
+Resumes suspended `ondata` events. Use this when downstream emits `ondrain`
 
     mailComposer.resume()
 
@@ -111,4 +112,4 @@ Resumes suspended ondata events.
 Once a message has been set up and streaming starts, the following events are emitted:
 
   * **ondata** `(chunk)`  - Emits an 7bit ASCII string (actually still unicode, but only 7bit symbols are used) for pipeing to SMTP
-  * **onend** - the entire message has been consumed
+  * **onend** - the entire message has been generated
