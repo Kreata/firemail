@@ -7,14 +7,14 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
+        mc.setText("test");
         test.deepEqual(mc._buildBodyTree(), {"contentType":"text/plain","content":"text"});
         test.done();
     },
 
     'bodyTree: html': function(test){
         var mc = mailComposer();
-        mc.setHTMLBody("html");
+        mc.setHtml("html");
         test.deepEqual(mc._buildBodyTree(), {"contentType":"text/html","content":"html"});
         test.done();
     },
@@ -28,15 +28,15 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and html': function(test){
         var mc = mailComposer();
-        mc.setHTMLBody("html");
-        mc.setTextBody("test");
+        mc.setHtml("html");
+        mc.setText("test");
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/alternative","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"contentType":"text/html","content":"html"}]});
         test.done();
     },
 
     'bodyTree: plaintext and attachment': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
+        mc.setText("test");
         mc.addAttachment({content: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"attachment":{"content":"test"}}]});
         test.done();
@@ -44,7 +44,7 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and several attachments': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
+        mc.setText("test");
         mc.addAttachment({content: "test1"});
         mc.addAttachment({content: "test2"});
         mc.addAttachment({content: "test3"});
@@ -54,7 +54,7 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and cid attachment': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
+        mc.setText("test");
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"attachment":{"content":"test", "contentId": "test"}}]});
         test.done();
@@ -62,7 +62,7 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and attachment and cid attachment': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
+        mc.setText("test");
         mc.addAttachment({content: "test"});
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"attachment":{"content":"test"}},{"attachment":{"content":"test", "contentId": "test"}}]});
@@ -71,7 +71,7 @@ this.mailComposerTests = {
 
     'bodyTree: html and attachment': function(test){
         var mc = mailComposer();
-        mc.setHTMLBody("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"text/html","content":"html"},{"attachment":{"content":"test"}}]});
         test.done();
@@ -79,7 +79,7 @@ this.mailComposerTests = {
 
     'bodyTree: html and cid attachment': function(test){
         var mc = mailComposer();
-        mc.setHTMLBody("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/related","multipart":true,"childNodes":[{"contentType":"text/html","content":"html"},{"attachment":{"content":"test","contentId":"test"}}]});
         test.done();
@@ -87,7 +87,7 @@ this.mailComposerTests = {
 
     'bodyTree: html and attachment and cid attachment': function(test){
         var mc = mailComposer();
-        mc.setHTMLBody("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test"});
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"multipart/related","multipart":true,"childNodes":[{"contentType":"text/html","content":"html"},{"attachment":{"content":"test","contentId":"test"}}]},{"attachment":{"content":"test"}}]});
@@ -96,8 +96,8 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and html and attachment': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
-        mc.setHTMLBody("test");
+        mc.setText("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"multipart/alternative","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"contentType":"text/html","content":"html"}]},{"attachment":{"content":"test"}}]});
         test.done();
@@ -105,8 +105,8 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and html and cid attachment': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
-        mc.setHTMLBody("test");
+        mc.setText("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/alternative","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"contentType":"multipart/related","multipart":true,"childNodes":[{"contentType":"text/html","content":"html"},{"attachment":{"content":"test","contentId":"test"}}]}]});
         test.done();
@@ -114,8 +114,8 @@ this.mailComposerTests = {
 
     'bodyTree: plaintext and html and attachment and cid attachment': function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
-        mc.setHTMLBody("test");
+        mc.setText("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test"});
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._buildBodyTree(), {"contentType":"multipart/mixed","multipart":true,"childNodes":[{"contentType":"multipart/alternative","multipart":true,"childNodes":[{"contentType":"text/plain","content":"text"},{"contentType":"multipart/related","multipart":true,"childNodes":[{"contentType":"text/html","content":"html"},{"attachment":{"content":"test","contentId":"test"}}]}]},{"attachment":{"content":"test"}}]});
@@ -124,8 +124,8 @@ this.mailComposerTests = {
 
     flattenBodyTree: function(test){
         var mc = mailComposer();
-        mc.setTextBody("test");
-        mc.setHTMLBody("test");
+        mc.setText("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test"});
         mc.addAttachment({content: "test", contentId: "test"});
         test.deepEqual(mc._flattenBodyTree(), [{"boundary":0,"contentType":"multipart/mixed","multipart":true,"boundaryOpen":1},{"boundary":1,"contentType":"multipart/alternative","multipart":true,"boundaryOpen":2},{"boundary":2,"contentType":"text/plain","content":"text"},{"boundary":2,"contentType":"multipart/related","multipart":true,"boundaryOpen":3},{"boundary":3,"contentType":"text/html","content":"html"},{"boundary":3,"attachment":{"content":"test","contentId":"test"}},{"boundaryClose":3},{"boundaryClose":2},{"boundary":1,"attachment":{"content":"test"}},{"boundaryClose":1}]);
@@ -135,8 +135,8 @@ this.mailComposerTests = {
     'pause and resume': function(test){
         var mc = mailComposer(),
             paused = true;
-        mc.setTextBody("test");
-        mc.setHTMLBody("test");
+        mc.setText("test");
+        mc.setHtml("test");
         mc.addAttachment({content: "test"});
         mc.addAttachment({content: "test", contentId: "test"});
 
