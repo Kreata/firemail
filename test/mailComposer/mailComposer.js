@@ -186,6 +186,17 @@ this.mailComposerTests = {
         test.equal('<sfdsfds> <sfsfdsfdfs> <wwww> <rrr> <ooo> <qqq> <ddd>', mc.encodeHeaderValue("references", ["sfdsfds", "sfsfdsfdfs", "<wwww>", "<rrr> <ooo>", "qqq ddd"]));
         test.equal('"=?UTF-8?Q?=C3=95nne_M=C3=A4ger?=" <onne.mager@xn--nnemger-8wa2m.ee>', mc.encodeHeaderValue("To", ["Õnne Mäger <onne.mager@õnnemäger.ee>"]));
         test.done();
-    }
+    },
 
+    'getEnvelope': function(test){
+        var mc = mailComposer();
+        mc.setHeader("from", "andris1@node.ee, andris2@node.ee");
+        mc.setHeader("sender", "andris3@node.ee, andris4@node.ee");
+        mc.setHeader("to", "andris5@node.ee, andris6@node.ee");
+        mc.setHeader("cc", ["andris7@node.ee, andris8@node.ee"]);
+        mc.setHeader("bcc", ["andris9@node.ee, andris10@node.ee"]);
+        test.deepEqual(mc.getEnvelope(), {"from":"andris3@node.ee","to":["andris5@node.ee","andris6@node.ee","andris7@node.ee","andris8@node.ee","andris9@node.ee","andris10@node.ee"]});
+        test.done();
+    }
 };
+
