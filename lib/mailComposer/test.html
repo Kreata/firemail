@@ -33,6 +33,13 @@
             console.log(JSON.stringify(mc._buildBodyTree()))
             console.log(JSON.stringify(mc._flattenBodyTree()));
             mc.stream();
+
+            console.log(mc.encodeHeaderValue("from", ["Mati Jõgi <mati.jõgi@matijõgi.ee>, Andris Reinman <andris@node.ee>", "andmekala@hot.ee"]));
+            console.log(mc.encodeHeaderValue("subject", "Äksi nõid teeb tegusid"));
+            console.log(mc.encodeHeaderValue("in-reply-to", "sssssss"));
+            console.log(mc.encodeHeaderValue("in-reply-to", "<sssssss>"));
+            console.log(mc.encodeHeaderValue("references", ["sfdsfds", "sfsfdsfdfs", "<wwww>", "<rrr> <ooo>", "qqq ddd"]));
+            console.log(mc.encodeHeaderValue("To", ["Õnne Mäger <onne.mager@õnnemäger.ee>"]))
         });
         </script>
     </head>

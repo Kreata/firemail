@@ -4,9 +4,6 @@
 
 `mailComposer` allows you to generate and stream multipart mime messages.
 
-**NB!!** Not ready yet. Generating messages works but not completely. Header fields (including
-subject ect.) are not mime encoded if not ascii.
-
 ## Usage
 
 ### AMD
@@ -26,7 +23,9 @@ var composer = mailComposer();
 ### setHeader
 
 Sets a header value for the specified key. If previous value with the same key exists, it is overwritten.
-If you want to set multiple values for the same key, use an array as the value.
+If you want to set multiple values for the same key, use an array as the value. Values are inserted
+"as is", if the value includes unicode symbols or is not properly formatted, use `encodeHeaderValue`
+before inserting the data.
 
     mailComposer.setHeader(key, value)
 
@@ -36,6 +35,24 @@ If you want to set multiple values for the same key, use an array as the value.
 For example:
 
     mailComposer.setHeader("x-mailer", "my awesome mailer")
+
+### encodeHeaderValue
+
+Encodes and formats header values. Needed especially when unicode symbols are used.
+Also properly encodes e-mail addresses (names, unicde domain names etc.)
+
+    mailComposer.encodeHeaderValue(key, value) -> String
+
+  * **key** - Header key
+  * **value** - Header value, usually string but some keys also accept arrays (`to`, `cc`, `references`)
+
+For example
+
+    mailComposer.encodeHeaderValue("To", ["Õnne Mäger <onne.mager@õnnemäger.ee>"])
+
+returns the following string:
+
+    "=?UTF-8?Q?=C3=95nne_M=C3=A4ger?=" <onne.mager@xn--nnemger-8wa2m.ee>
 
 ### setText
 
@@ -48,6 +65,7 @@ Set the plaintext body of the message. Unicode strings are allowed.
 For example:
 
     mailComposer.setText("Hello world!\r\nYours faithfully\r\nSender");
+
 
 ### setHtml
 
@@ -65,7 +83,7 @@ For example:
 
 Adds an attachment to the message. Can be called several times.
 For embedded images, use `contentId` property
-     
+
     mailComposer.addAttachment(attachment)
 
   * **attachment** - Attachment object
@@ -103,7 +121,7 @@ Run after the message has been set up. Starts streaming of the message.
 
 ### suspend
 
-Suspends emitting any more `ondata` events until resumed. Use this when 
+Suspends emitting any more `ondata` events until resumed. Use this when
 writing to downstream returns false.
 
     mailComposer.suspend()

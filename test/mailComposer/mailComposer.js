@@ -175,6 +175,17 @@ this.mailComposerTests = {
                                              "Test1: abc\r\n"+
                                              "MIME-Version: 1.0");
         test.done();
+    },
+
+    'encodeHeaderValue': function(test){
+        var mc = mailComposer();
+        test.equal('"Mati =?UTF-8?Q?J=C3=B5gi?=" <=?UTF-8?Q?mati.j=C3=B5gi?=@xn--matijgi-50a.ee>, "Andris Reinman" <andris@node.ee>, andmekala@hot.ee', mc.encodeHeaderValue("from", ["Mati Jõgi <mati.jõgi@matijõgi.ee>, Andris Reinman <andris@node.ee>", "andmekala@hot.ee"]));
+        test.equal('=?UTF-8?Q?=C3=84ksi_n=C3=B5id_?=teeb tegusid', mc.encodeHeaderValue("subject", "Äksi nõid teeb tegusid"));
+        test.equal('<sssssss>', mc.encodeHeaderValue("in-reply-to", "sssssss"));
+        test.equal('<sssssss>', mc.encodeHeaderValue("in-reply-to", "<sssssss>"));
+        test.equal('<sfdsfds> <sfsfdsfdfs> <wwww> <rrr> <ooo> <qqq> <ddd>', mc.encodeHeaderValue("references", ["sfdsfds", "sfsfdsfdfs", "<wwww>", "<rrr> <ooo>", "qqq ddd"]));
+        test.equal('"=?UTF-8?Q?=C3=95nne_M=C3=A4ger?=" <onne.mager@xn--nnemger-8wa2m.ee>', mc.encodeHeaderValue("To", ["Õnne Mäger <onne.mager@õnnemäger.ee>"]));
+        test.done();
     }
 
 };
