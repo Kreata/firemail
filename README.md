@@ -1,6 +1,6 @@
 # E-mail components for FirefoxOS apps
 
-See [demo app](/andris9/firemail/tree/master/example) for an example of sending a rich formatted mail with firemail
+See [demo app](https://github.com/andris9/firemail/tree/master/example) for an example of sending a rich formatted mail with firemail
 
 ![firemail](http://tahvel.info/firemail.png)
 
