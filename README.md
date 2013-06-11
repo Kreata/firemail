@@ -24,7 +24,7 @@ Install the application to the FirefoxOS simulator (use the [manifest file](mani
 
 **Step 3**
 
-Open the application in the simulator. The launch page is a [nodeunit](https://github.com/caolan/nodeunit) testrunner.
+Open the application in the simulator. The launch page has a link to [nodeunit](https://github.com/caolan/nodeunit) unit tests.
 
 ## Index
 
