@@ -7,9 +7,10 @@ define([
     "./lib/mimeFunctions/mimeTypes",
     "./lib/mimeFunctions/addressParser",
     "./lib/mailComposer/mailComposer",
-    "./lib/sendmail/sendmail",
-    "./lib/smtpClient/smtpClient"
-    ], function(mimeFunctions, mimeTypes, addressParser, mailComposer, sendmail, smtpClient) {
+    "./lib/smtpClient/smtpClient",
+    "./lib/sendmail/sendmail"
+    
+    ], function(mimeFunctions, mimeTypes, addressParser, mailComposer, smtpClient, sendmail) {
 
         return {
             mimeFunctions: mimeFunctions,
