@@ -4,6 +4,37 @@ See [demo app](https://github.com/andris9/firemail/tree/master/example) for an e
 
 ![firemail](http://tahvel.info/firemail.png)
 
+
+## tl;dr - send an email using firemail
+
+### Install with volo
+
+    volo add andris9/firemail
+
+### Require firemail
+
+    var firemail = require("firemail");
+
+
+### Send some mail
+
+    firemail.sendmail({
+        stmp:{
+            host: "smtp.gmail.com",
+            useSSL: true,
+            auth: {
+                user: "yourgmail@user",
+                pass: "password"
+            }
+        },
+        from: "sender@example.com",
+        to: "receiver@example.com",
+        subject: "test message",
+        text: "Hello world!"
+    }, function(err, success){
+        alert(err || success);
+    });
+
 ## Running the tests
 
 **Step 1**
