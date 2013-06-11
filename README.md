@@ -1,6 +1,6 @@
 # E-mail components for FirefoxOS apps
 
-See [demo app](../example) for an example of sending a rich formatted mail with firemail
+See [demo app](../example/) for an example of sending a rich formatted mail with firemail
 
 ![firemail](http://tahvel.info/firemail.png)
 
