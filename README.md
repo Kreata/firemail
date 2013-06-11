@@ -37,6 +37,8 @@ See [demo app](https://github.com/andris9/firemail/tree/master/example) for a co
         alert(err || success);
     });
 
+See all options for the sendmail method [here](docs/sendmail.md#api).
+
 ## Running the tests
 
 **Step 1**
