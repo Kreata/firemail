@@ -1,6 +1,8 @@
 # E-mail components for FirefoxOS apps
 
-See [demo app](https://github.com/andris9/firemail/tree/master/example) for an example of sending a rich formatted mail with firemail
+firemail is not entirely FirefoxOS specific. SMTP client requires TCPSocket support which is currently only supported by FirefoxOS but other components probably run in every modern browser.
+
+See [demo app](https://github.com/andris9/firemail/tree/master/example) for a complete example of sending a formatted mail with firemail.
 
 ![firemail](http://tahvel.info/firemail.png)
 
