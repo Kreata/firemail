@@ -6,36 +6,143 @@
         <!-- data-main attribute tells require.js to load
              scripts/main.js after require.js loads. -->
         <script data-main="app" src="require.js"></script>
+        <script>
+            // load SMTP data from localStorage (if set)
+            document.addEventListener("DOMContentLoaded", function(evt){
+                try{
+                    var mail = JSON.parse(localStorage.firemailDemo);
+                    if(mail.smtp){
+                        document.getElementById("host").value = mail.smtp.host || "localhost";
+                        document.getElementById("port").value = mail.smtp.port || "";
+                        document.getElementById("ssl").checked = !!mail.smtp.useSSL;
+                        if(mail.smtp.auth){
+                            document.getElementById("user").value = mail.smtp.auth.user || "";
+                            document.getElementById("pass").value = mail.smtp.auth.pass || "";
+                        }
+                    }
+
+                    document.getElementById("from").value = mail.from || "";
+
+                }catch(E){}
+            }, false);
+        </script>
     </head>
     <body>
         <h1>Firemail</h1>
         <p><a href="../test/testrunner.html">UNIT TESTS</a></p>
 
-        <p><strong>NB!</strong> this is a proof of concept app. There is no error handling, so if anything goes wrong (invalid form inputs, password etc.) then the app probably just hangs and needs to be restarted.</p>
+        <h2>Send an e-mail</h2>
 
-        <fieldset>
-            <legend>SMTP settings</legend>
-            <p><label>Hostname <input type="text" id="host" value="smtp.gmail.com" /></label></p>
-            <p><label>Port <input type="number" id="port" value="465" /></label></p>
-            <p><label><input type="checkbox" id="ssl" checked/> use SSL</label></p>
-            <p><label>User name <input type="text" id="user" value="" /></label></p>
-            <p><label>Password <input type="password" id="pass" value="" /></label></p>
-        </fieldset>
+        <form method="post" action="." onsubmit="sendMail(); return false;">
 
-        <fieldset>
-            <legend>Compose e-mail</legend>
-            <p><label>From <input type="text" id="from" value="sender@localhost" /></label></p>
-            <p><label>To <input type="text" id="to" value="recipient@localhost" /></label></p>
-            <p><label>Subject <input type="text" id="subject" value="test" /></label></p>
-            <p><label>Text<br />
-                <textarea id="text" style="width: 90%;" rows=5>
+            <fieldset>
+                <legend>SMTP settings</legend>
+                <small><strong>NB!</strong> SMTP settings are stored to localStorage</small>
+                <table style="width: 95%">
+
+                    <tr>
+                        <td>
+                            <label for="host">Hostname</label>
+                        </td>
+                        <td>
+                            <input type="text" id="host" value="smtp.gmail.com" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="port">Port</label>
+                        </td>
+                        <td>
+                            <input type="number" id="port" value="465" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <input type="checkbox" id="ssl" checked/> use SSL</label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="user">User name</label>
+                        </td>
+                        <td>
+                            <input type="text" id="user" value="" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="pass">Password</label>
+                        </td>
+                        <td>
+                            <input type="password" id="pass" value="" />
+                        </td>
+                    </tr>
+
+                </table>
+            </fieldset>
+
+            <fieldset>
+                <legend>Compose e-mail</legend>
+
+                <table style="width: 95%">
+
+                    <tr>
+                        <td>
+                            <label for="from">From:</label>
+                        </td>
+                        <td>
+                            <input type="text" id="from" value="" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="to">To:</label>
+                        </td>
+                        <td>
+                            <input type="text" id="to" value="" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label for="subject">Subject:</label>
+                        </td>
+                        <td>
+                            <input type="text" id="subject" value="" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <label>Text<br />
+                    <textarea id="text" style="width: 90%;" rows=5>
 
 -- best regards
-</textarea></label></p>
-            <p><label>Attachment <input type="file" id="attachment"/></label></p>
+</textarea></label>
+                        </td>
+                    </tr>
 
-            <p><input type="button" id="sendBtn" onclick="sendMail()" value="Send mail" /></p>
-        </fieldset>
+                    <tr>
+                        <td colspan="2">
+                            <label>Attachment<br/><input type="file" id="attachment"/></label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <input type="submit" id="sendBtn" value="Send mail" />
+                        </td>
+                    </tr>
+
+                </table>
+
+            </fieldset>
+        </form>
     </body>
 </html>
 

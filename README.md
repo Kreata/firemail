@@ -1,6 +1,8 @@
 # E-mail components for FirefoxOS apps
 
-*SMTP client currently only, but at least that's something as well :)*
+See [demo app](../example) for an example of sending a rich formatted mail with firemail
+
+![firemail](http://tahvel.info/firemail.png)
 
 ## Running the tests
 
@@ -37,6 +39,7 @@ will be used instead.
   * [mimeTypes](docs/mimeTypes.md)
   * [addressParser](docs/addressParser.md)
   * [mailComposer](docs/mailComposer.md)
+  * [sendmail](docs/sendmail.md)
 
 ## License
 
