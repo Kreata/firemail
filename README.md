@@ -1,6 +1,6 @@
 # E-mail components for FirefoxOS apps
 
-firemail is not entirely FirefoxOS specific. SMTP client requires TCPSocket support which is currently only supported by FirefoxOS but other components probably run in every modern browser.
+firemail is not entirely FirefoxOS specific. SMTP client requires TCPSocket support which is supported by FirefoxOS, for converting strings TextEncoder is needed and this is supported by FirefoxOS and Firefox. Other components probably run in every modern browser.
 
 See [demo app](https://github.com/andris9/firemail/tree/master/example) for a complete example of sending a formatted mail with firemail.
 
