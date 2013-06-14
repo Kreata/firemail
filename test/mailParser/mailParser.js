@@ -101,6 +101,80 @@ this.mailParserTests = {
         });
     },
 
+    "M3-1": function(test){
+        loadParserTestFile("M3-1", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+            
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"application/x-paf"},"subject":"M3-1"});
+            test.equal(tree.body, "This email is not marked as being text, so a normal user\nshould NOT get this information without a question.\n\n  M3   \n       Recognize and interpret the Content-Type header field, and avoid\n       showing users raw data with a Content-Type field other than text.\n       Be able to send at least text/plain messages, with the character\n       set specified as a parameter if it is not US-ASCII.\n");
+            test.ok(tree.attachment);
+
+            test.done();
+        });
+    },
+
+    "M3-2": function(test){
+        loadParserTestFile("M3-2", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+            
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"text/plain"},"subject":"M3-2"});
+            test.equal(tree.body, "This email is marked as being text, so a normal user\nshould get this information without a question.\n\n  M3   \n       Recognize and interpret the Content-Type header field, and avoid\n       showing users raw data with a Content-Type field other than text.\n       Be able to send at least text/plain messages, with the character\n       set specified as a parameter if it is not US-ASCII.\n");
+            test.ok(!tree.attachment);
+
+            test.done();
+        });
+    },
+
+    "M4.1.1": function(test){
+        loadParserTestFile("M4.1.1", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+            
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"text/plain","charset":"US-ASCII"},"subject":"M4.1.1"});
+            test.equal(tree.body, "  M4.1.1\n    Recognize and display \"text\" mail with the character set \"US-ASCII.\" \n\n");
+
+            test.done();
+        });
+    },
+
+    "M4.1.2": function(test){
+        loadParserTestFile("M4.1.2", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+            
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"text/plain","charset":"X-PAF"},"subject":"M4.1.2"});
+            test.equal(tree.body, "  M4.1.2\n       Recognize other character sets at least to the extent of being able \n       to inform the user about what character set the message uses.   \n");
+
+            test.done();
+        });
+    },
+
     "M4.1.3": function(test){
         loadParserTestFile("M4.1.3", function(err, data){
             test.ifError(err);
@@ -114,6 +188,25 @@ this.mailParserTests = {
 
             test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"text/plain","charset":"ISO-8859-7"},"content-transfer-encoding":"quoted-printable","subject":"M4.1.3"});
             test.equal(tree.body, "  This character ------->  Χ\n\n  has decimal value > 127. It should only be visible IF you can\n  show the character set ISO-8859-7. It should be visible as\n  the \"GREEK CAPITAL LETTER CHI\".\n\n  M4.1.3\n       Recognize the \"ISO-8859-*\" character sets to the extent of being able\n       to display those characters that are common to ISO-8859-* and\n       US-ASCII, namely all characters represented by octet values 0-127.\n\n       (Interoperability comment: What glyphs to show for octets in the\n       range 128-255 is up to the software itself.)\n");
+
+            test.done();
+        });
+    },
+
+    "M4.3.1": function(test){
+        loadParserTestFile("M4.3.1", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+            
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"multipart/mixed","boundary":"this_is_a_boundary"},"subject":"M4.3.1"});
+
+            test.equal(tree.text, "  (This is the first part out of three)\n\n  M4.3.1\n       Recognize the primary (mixed) subtype. Display all relevant\n       information on the message level and the body part header level  \n       and then display or offer to display each of the body parts\n       individually.\n  (This is the second part out of three)\n\n       (Interopability comment: For maximum usage friendliness, we\n       recommend the software to open as few windows as possible, i.e. if\n       the software itself can display several different media-types,\n       parts made up of these types should be shown together without any\n       need for interaction with the user,)\n  (This is the third part out of three)\n\n       Note that even though all three parts is text/plain, it is\n       still three different parts, and this should be visible for\n       the user.\n");
 
             test.done();
         });
