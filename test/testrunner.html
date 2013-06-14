@@ -14,6 +14,7 @@
     <script src="../lib/punycode/punycode.js"></script>
     <script src="../lib/mailComposer/mailComposer.js"></script>
     <script src="../lib/sendmail/sendmail.js"></script>
+    <script src="../lib/mailParser/mailParser.js"></script>
 
     <script src="smtpClient/smtpResponseParser.js"></script>
     <script src="smtpClient/smtpClient.js"></script>
@@ -25,21 +26,25 @@
     <script src="mailComposer/mailComposer.js"></script>
     <script src="sendmail/sendmail.js"></script>
 
+    <script src="mailParser/loadParserTestFile.js"></script>
+    <script src="mailParser/mailParser.js"></script>
+
   </head>
   <body>
     <p><a href="../example/app.html">Back to front</a></p>
     <script>
-      nodeunit.run({
-        'smtpResponseParser': smtpResponseParserTests,
-        'smtpClient': smtpClientTests,
-        'addressParser': addressParserTests,
-        'base64': Base64Tests,
-        'charset': CharsetTests,
-        'mimeFunctions': mimeFunctionsTests,
-        'mimeTypes': mimeTypesTests,
-        'mailComposer': mailComposerTests,
-        'sendmail': sendmailTests
-      });
+        nodeunit.run({
+            'smtpResponseParser': smtpResponseParserTests,
+            'smtpClient': smtpClientTests,
+            'addressParser': addressParserTests,
+            'base64': Base64Tests,
+            'charset': CharsetTests,
+            'mimeFunctions': mimeFunctionsTests,
+            'mimeTypes': mimeTypesTests,
+            'mailComposer': mailComposerTests,
+            'sendmail': sendmailTests,
+            'mailParser': mailParserTests
+        });
     </script>
   </body>
 </html>

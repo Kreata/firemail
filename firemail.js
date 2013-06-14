@@ -8,9 +8,10 @@ define([
     "./lib/mimeFunctions/addressParser",
     "./lib/mailComposer/mailComposer",
     "./lib/smtpClient/smtpClient",
-    "./lib/sendmail/sendmail"
+    "./lib/sendmail/sendmail",
+    "./lib/sendmail/mailParser"
 
-    ], function(mimeFunctions, mimeTypes, addressParser, mailComposer, smtpClient, sendmail) {
+    ], function(mimeFunctions, mimeTypes, addressParser, mailComposer, smtpClient, sendmail, mailParser) {
 
         return {
             mimeFunctions: mimeFunctions,
@@ -18,7 +19,8 @@ define([
             addressParser: addressParser,
             smtpClient: smtpClient,
             mailComposer: mailComposer,
-            sendmail: sendmail
+            sendmail: sendmail,
+            mailParser: mailParser
         };
     }
 );
