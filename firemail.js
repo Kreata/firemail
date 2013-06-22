@@ -9,7 +9,7 @@ define([
     "./lib/mailComposer/mailComposer",
     "./lib/smtpClient/smtpClient",
     "./lib/sendmail/sendmail",
-    "./lib/sendmail/mailParser"
+    "./lib/mailParser/mailParser"
 
     ], function(mimeFunctions, mimeTypes, addressParser, mailComposer, smtpClient, sendmail, mailParser) {
 
