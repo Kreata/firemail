@@ -8,7 +8,7 @@ this.sendmailTests = {
             from: "sender@example.com",
             subject: "test",
             text: "test"
-        }
+        };
 
         sendmail(mail, function(err, success){
             test.ok(err);
@@ -26,7 +26,7 @@ this.sendmailTests = {
             to: "receiver@example.com",
             subject: "test",
             text: "test"
-        }
+        };
 
         sendmail(mail, function(err, success){
             test.ok(!err);
@@ -34,4 +34,4 @@ this.sendmailTests = {
             test.done();
         });
     }
-}
+};

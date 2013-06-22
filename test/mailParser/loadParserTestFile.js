@@ -1,5 +1,5 @@
 function loadParserTestFile(name, callback) {
-    
+
     // relative to testrunner
     var mimePath = "./mailParser/MimeBack/messages-directory";
 
@@ -8,7 +8,7 @@ function loadParserTestFile(name, callback) {
         xhr.open('GET', url, true);
         xhr.responseType = 'arraybuffer';
 
-        xhr.onload = function(e) {
+        xhr.onload = function(evt) {
             if (this.status == 200) {
                 callback(null, new Uint8Array(this.response));
             }else{
@@ -17,11 +17,11 @@ function loadParserTestFile(name, callback) {
         };
 
         xhr.send();
-    }
+    };
 
     ajaxRequest(mimePath + "/" + name, function(err, data){
         if(err){
-            callback(err)
+            callback(err);
         }else{
             callback(null, data);
         }

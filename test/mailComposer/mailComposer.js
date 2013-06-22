@@ -197,6 +197,35 @@ this.mailComposerTests = {
         mc.setHeader("bcc", ["andris9@node.ee, andris10@node.ee"]);
         test.deepEqual(mc.getEnvelope(), {"from":"andris3@node.ee","to":["andris5@node.ee","andris6@node.ee","andris7@node.ee","andris8@node.ee","andris9@node.ee","andris10@node.ee"]});
         test.done();
+    },
+
+    textFormatFlowed: function(test){
+        var inputStr = " a long line that should be stuffed, not sure if it will be but lets see. "+
+                       "max line length should be about 76 characters\r\n"+
+                       "From should be stuffed\r\n"+
+                       "> should be stuffed as well\r\n"+
+                       "this line should not be stuffed as it does not begin wither with space, From or >",
+
+            outputStr = "  a long line that should be stuffed, not sure if it will be but lets see. \r\n"+
+                        "max line length should be about 76 characters\r\n"+
+                        " From should be stuffed\r\n"+
+                        " > should be stuffed as well\r\n"+
+                        "this line should not be stuffed as it does not begin wither with space, \r\n"+
+                        "From or >"+
+                        "\r\n"; // not part of folding, added to complete the multipart text
+
+        test.expect(1);
+        var mc = mailComposer();
+
+        mc._body.text = inputStr;
+        mc._suspended = false;
+        mc.ondata = function(chunk){
+            test.equal(chunk, outputStr);
+        };
+
+        mc._streamText({flowed: true}, function(){
+            test.done();
+        });
     }
 };
 
