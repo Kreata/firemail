@@ -210,6 +210,61 @@ this.mailParserTests = {
 
             test.done();
         });
+    },
+
+    "M4.3.2": function(test){
+        loadParserTestFile("M4.3.2", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"multipart/alternative","boundary":"this_is_a_boundary"},"subject":"M4.3.2"});
+            test.equal(tree.text, "  (This is the second part out of two)\n\n  M4.3.2\n       Recognize the \"alternative\" subtype, and avoid showing the user \n       redundant parts of multipart/alternative mail.\n");
+            test.deepEqual(tree.attachments, [{"headers":{"content-type":{"content-type":"application/x-unknown"}},"body":"  (This is the first part out of two)\n\n       This text should not be visible for the user, because\n       it exists an alternative part (the second one) which is\n       in format text/plain.\n","attachment":true}]);
+
+            test.done();
+        });
+    },
+
+    "M4.3.3": function(test){
+        loadParserTestFile("M4.3.3", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"multipart/x-foo","boundary":"this_is_a_boundary"},"subject":"M4.3.3"});
+            test.equal(tree.text, "  (This is the first part out of two)\n\n  M4.3.3\n       Treat any unrecognized subtypes as if they were \"mixed\".           \n  (This is the second part out of two)\n\n       Note that even though both parts is text/plain, it is\n       still two different parts, and this should be visible for\n       the user.\n\n       Also, this mail should be visible in the same way as\n       4.3.1, even though the multipart subtype is not mixed.\n");
+
+            test.done();
+        });
+    },
+
+    "M4.4.1": function(test){
+        loadParserTestFile("M4.4.1", function(err, data){
+            test.ifError(err);
+            test.ok(data);
+
+            var mc = mailParser();
+            mc.write(data);
+            mc.end();
+
+            var tree = mc.getParsedTree();
+
+            test.deepEqual( tree.headers, {"from":"mimetest-human@imc.org","to":"(requester of the test)","mime-version":"1.0","content-type":{"content-type":"application/x-paf"},"content-transfer-encoding":"base64","subject":"M4.4.1"});
+            test.deepEqual(tree.body, new Uint8Array([0x20, 0x20, 0x4D, 0x34, 0x2E, 0x34, 0x2E, 0x31, 0xD, 0xA, 0xD, 0xA, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x4F, 0x66, 0x66, 0x65, 0x72, 0x20, 0x74, 0x68, 0x65, 0x20, 0x61, 0x62, 0x69, 0x6C, 0x69, 0x74, 0x79, 0x20, 0x74, 0x6F, 0x20, 0x72, 0x65, 0x6D, 0x6F, 0x76, 0x65, 0x20, 0x65, 0x69, 0x74, 0x68, 0x65, 0x72, 0x20, 0x6F, 0x66, 0x20, 0x74, 0x68, 0x65, 0x20, 0x74, 0x77, 0x6F, 0x20, 0x74, 0x79, 0x70, 0x65, 0x73, 0x20, 0x6F, 0x66, 0xD, 0xA, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x43, 0x6F, 0x6E, 0x74, 0x65, 0x6E, 0x74, 0x2D, 0x54, 0x72, 0x61, 0x6E, 0x73, 0x66, 0x65, 0x72, 0x2D, 0x45, 0x6E, 0x63, 0x6F, 0x64, 0x69, 0x6E, 0x67, 0x20, 0x64, 0x65, 0x66, 0x69, 0x6E, 0x65, 0x64, 0x20, 0x69, 0x6E, 0x20, 0x52, 0x46, 0x43, 0x2D, 0x38, 0x32, 0x32, 0x20, 0x61, 0x6E, 0x64, 0x20, 0x70, 0x75, 0x74, 0x20, 0x74, 0x68, 0x65, 0x20, 0x72, 0x65, 0x73, 0x75, 0x6C, 0x74, 0x69, 0x6E, 0x67, 0xD, 0xA, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x69, 0x6E, 0x66, 0x6F, 0x72, 0x6D, 0x61, 0x74, 0x69, 0x6F, 0x6E, 0x20, 0x69, 0x6E, 0x20, 0x61, 0x20, 0x75, 0x73, 0x65, 0x72, 0x20, 0x66, 0x69, 0x6C, 0x65, 0x2E, 0xD, 0xA]));
+
+            test.done();
+        });
     }
 
 };
