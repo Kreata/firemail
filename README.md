@@ -77,6 +77,8 @@ will be used instead.
   * [mailComposer](docs/mailComposer.md)
   * [sendmail](docs/sendmail.md)
 
+Additionally `mailParser` object is exposed as well but this is in early alpha stage and the development has kind of stalled as other issues have arised that take my free time. If you are still interested in parsing e-mails, see [the testfile](test/mailParser/mailParser.js) for `mailParser`.
+
 ## License
 
 **MIT**
