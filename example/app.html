@@ -3,6 +3,19 @@
     <head>
         <meta charset="utf-8"/>
         <title>Firemail</title>
+
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+        <link rel="stylesheet" href="vendor/Building-Blocks/style/headers.css">
+
+        <link rel="stylesheet" href="vendor/Building-Blocks/style/buttons.css">
+        <link rel="stylesheet" href="vendor/Building-Blocks/style/input_areas.css">
+
+        <link rel="stylesheet" href="vendor/Building-Blocks/style/switches.css">
+
+        <link rel="stylesheet" href="vendor/Building-Blocks/util.css">
+        <link rel="stylesheet" href="vendor/Building-Blocks/fonts.css">
+
         <!-- data-main attribute tells require.js to load
              scripts/main.js after require.js loads. -->
         <script data-main="app" src="require.js"></script>
@@ -28,125 +41,108 @@
         </script>
     </head>
     <body>
-        <h1>Firemail</h1>
-        <p><a href="../test/testrunner.html">UNIT TESTS</a></p>
+        <section role="region" id="index" data-position="current" class="skin-dark">
+            <header class="fixed">
+                <h1>Firemail <em>demo</em></h1>
+            </header>
 
-        <h2>Send an e-mail</h2>
+            <article class="content scrollable header">
 
-        <form method="post" action="." onsubmit="sendMail(); return false;">
+                <p>
+                    <button onclick="window.location.href='../test/testrunner.html'">
+                        Run Unit Tests
+                    </button>
+                </p>
 
-            <fieldset>
-                <legend>SMTP settings</legend>
-                <small><strong>NB!</strong> SMTP settings are stored to localStorage</small>
-                <table style="width: 95%">
+                <form method="post" action="." onsubmit="sendMail(); return false;">
 
-                    <tr>
-                        <td>
-                            <label for="host">Hostname</label>
-                        </td>
-                        <td>
-                            <input type="text" id="host" value="smtp.gmail.com" />
-                        </td>
-                    </tr>
+                    <header><h2>SMTP settings</h2></header>
+                    
+                    <fieldset>
+                        <legend>Host</legend>
+                        <section>
+                            <p>
+                                <input type="text" id="host" value="smtp.gmail.com" placeholder="Hostname" required/>
+                            </p>
+                            <p>
+                                <input type="number" id="port" value="465" placeholder="Port" required/>
+                            </p>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" id="ssl" checked>
+                                            <span></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        Use SSL
+                                    </td>
+                                </tr>
+                            </table>
+                        </section>
+                    </fieldset>
 
-                    <tr>
-                        <td>
-                            <label for="port">Port</label>
-                        </td>
-                        <td>
-                            <input type="number" id="port" value="465" />
-                        </td>
-                    </tr>
+                    <fieldset>
+                        <legend>Auth</legend>
+                        <section>
+                            <p>
+                                <input type="text" id="user" value="" placeholder="Username"/>
+                            </p>
+                            <p>
+                                <input type="password" id="pass" value="" placeholder="Password"/>
+                            </p>
+                        </section>
+                    </fieldset>
 
-                    <tr>
-                        <td colspan="2">
-                            <input type="checkbox" id="ssl" checked/> use SSL</label>
-                        </td>
-                    </tr>
+                    <header><h2>Compose e-mail</h2></header>
 
-                    <tr>
-                        <td>
-                            <label for="user">User name</label>
-                        </td>
-                        <td>
-                            <input type="text" id="user" value="" />
-                        </td>
-                    </tr>
+                    <fieldset>
+                        <legend>From</legend>
+                        <section>
+                            <p>
+                                <input type="text" id="from" value="" placeholder="From"/>
+                            </p>
+                        </section>
+                    </fieldset>
 
-                    <tr>
-                        <td>
-                            <label for="pass">Password</label>
-                        </td>
-                        <td>
-                            <input type="password" id="pass" value="" />
-                        </td>
-                    </tr>
+                    <fieldset>
+                        <legend>To</legend>
+                        <section>
+                            <p>
+                                <input type="text" id="to" value="" placeholder="To" required/>
+                            </p>
+                        </section>
+                    </fieldset>
 
-                </table>
-            </fieldset>
+                    <fieldset>
+                        <legend>Subject</legend>
+                        <section>
+                            <p>
+                                <input type="text" id="subject" value="" placeholder="Subject"/>
+                            </p>
+                        </section>
+                    </fieldset>
 
-            <fieldset>
-                <legend>Compose e-mail</legend>
 
-                <table style="width: 95%">
+                    <p>
+                        <textarea id="text" placeholder="E-mail message">
 
-                    <tr>
-                        <td>
-                            <label for="from">From:</label>
-                        </td>
-                        <td>
-                            <input type="text" id="from" value="" />
-                        </td>
-                    </tr>
+-- best regards</textarea>
+                    </p>
+                            
+                    <p>
+                        <input type="file" id="attachment"/>
+                    </p>
+                        
+                    <p>
+                        <button type="submit" id="sendBtn" class="recommend">Send mail</button>
+                    </p>
 
-                    <tr>
-                        <td>
-                            <label for="to">To:</label>
-                        </td>
-                        <td>
-                            <input type="text" id="to" value="" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label for="subject">Subject:</label>
-                        </td>
-                        <td>
-                            <input type="text" id="subject" value="" />
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2">
-                            <label>Text<br />
-                    <textarea id="text" style="width: 90%;" rows=5>
-
--- best regards
-</textarea></label>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2">
-                            <label>Attachment<br/><input type="file" id="attachment"/></label>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2">
-                            <input type="submit" id="sendBtn" value="Send mail" />
-                        </td>
-                    </tr>
-
-                </table>
-
-            </fieldset>
-        </form>
+                </form>
+            </article>
+        </section>
     </body>
 </html>
-
-
-
 
 
