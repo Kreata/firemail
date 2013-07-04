@@ -4,7 +4,7 @@ firemail is not entirely FirefoxOS specific. SMTP client requires TCPSocket supp
 
 See [demo app](https://github.com/andris9/firemail/tree/master/example) for a complete example of sending a formatted mail with firemail.
 
-![firemail](http://tahvel.info/firemail.png)
+![firemail](http://tahvel.info/firemail2.png)
 
 
 ## tl;dr - send an email using firemail
@@ -46,6 +46,7 @@ See all options for the sendmail method [here](docs/sendmail.md#api).
 Install and run the testserver (running on port 1025, so make sure this port is available) with `npm`:
 
 ```bash
+git clone git@github.com:andris9/firemail.git
 cd test/smtp-server
 npm install
 npm start
