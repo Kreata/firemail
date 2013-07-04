@@ -1,5 +1,7 @@
 # E-mail components for FirefoxOS apps
 
+**firemail** allows you to send e-mails from a FirefoxOS app with ease. **firemail** has no external dependencies and it only uses standard APIs offered by FirefoxOS.
+
 firemail is not entirely FirefoxOS specific. SMTP client requires TCPSocket support which is supported by FirefoxOS, for converting strings TextEncoder is needed and this is supported by FirefoxOS and Firefox. Other components probably run in every modern browser.
 
 See [demo app](https://github.com/andris9/firemail/tree/master/example) for a complete example of sending a formatted mail with firemail.
@@ -17,6 +19,21 @@ See [demo app](https://github.com/andris9/firemail/tree/master/example) for a co
 
     var firemail = require("firemail");
 
+### Ensure privileges
+
+Opening TCP sockets to a SMTP server requires special privileges. You need to set the type of your application to "privileged" and add "tcp-socket" to the permissions list in the application manifest.
+
+```
+{
+    "type" : "privileged",
+    "permissions": {
+        "tcp-socket": {
+            "description" : "Testime socketit"
+        }
+    },
+    ...
+}
+```
 
 ### Send some mail
 
@@ -32,7 +49,8 @@ See [demo app](https://github.com/andris9/firemail/tree/master/example) for a co
         from: "sender@example.com",
         to: "receiver@example.com",
         subject: "test message",
-        text: "Hello world!"
+        text: "Hello world!",
+        html: "<b>Hello world!</b>"
     }, function(err, success){
         alert(err || success);
     });
