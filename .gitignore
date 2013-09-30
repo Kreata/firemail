@@ -3,7 +3,8 @@ node_modules
 npm-debug.log
 
 # install these with volo
-lib/mimetypes
-lib/addressparser.js
-lib/mimefuncs.js
-lib/punycode.js
+mimetypes
+mailcomposer
+addressparser.js
+mimefuncs.js
+punycode.js
