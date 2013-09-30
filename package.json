@@ -1,5 +1,5 @@
 {
-  "main": "lib/firemail",
+  "main": "firemail",
   "volo": {
     "dependencies": {
       "mimetypes": "github:Kreata/mimetypes/v0.1.0",
