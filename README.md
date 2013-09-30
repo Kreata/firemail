@@ -8,7 +8,6 @@ See [demo app](https://github.com/andris9/firemail/tree/master/example) for a co
 
 ![firemail](http://tahvel.info/firemail2.png)
 
-
 ## tl;dr - send an email using firemail
 
 ### Install with volo
@@ -89,9 +88,9 @@ will be used instead.
 **firemail** exposes the following objects.
 
   * [smtpClient](docs/smtpClient.md)
-  * [mimeFunctions](docs/mimeFunctions.md)
-  * [mimeTypes](docs/mimeTypes.md)
-  * [addressParser](docs/addressParser.md)
+  * [mimefuncs](https://github.com/Kreata/mimefuncs)
+  * [mimetypes](https://github.com/Kreata/mimetypes)
+  * [addressparser](https://github.com/Kreata/addressparser)
   * [mailComposer](docs/mailComposer.md)
   * [sendmail](docs/sendmail.md)
 

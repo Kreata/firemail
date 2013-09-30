@@ -3,20 +3,20 @@
 
 define([
 
-    "./lib/mimeFunctions/mimeFunctions",
-    "./lib/mimeFunctions/mimeTypes",
-    "./lib/mimeFunctions/addressParser",
+    "./lib/mimefuncs",
+    "./lib/mimetypes",
+    "./lib/addressparser",
     "./lib/mailComposer/mailComposer",
     "./lib/smtpClient/smtpClient",
     "./lib/sendmail/sendmail",
     "./lib/mailParser/mailParser"
 
-    ], function(mimeFunctions, mimeTypes, addressParser, mailComposer, smtpClient, sendmail, mailParser) {
+    ], function(mimefuncs, mimetypes, addressparser, mailComposer, smtpClient, sendmail, mailParser) {
 
         return {
-            mimeFunctions: mimeFunctions,
-            mimeTypes: mimeTypes,
-            addressParser: addressParser,
+            mimefuncs: mimefuncs,
+            mimetypes: mimetypes,
+            addressparser: addressparser,
             smtpClient: smtpClient,
             mailComposer: mailComposer,
             sendmail: sendmail,
