@@ -4,7 +4,7 @@
 define([
 
     "./lib/mimefuncs",
-    "./lib/mimetypes",
+    "./lib/mimetypes/mimetypes",
     "./lib/addressparser",
     "./lib/mailComposer/mailComposer",
     "./lib/smtpClient/smtpClient",

@@ -1,3 +1,8 @@
 node_modules
 .DS_Store
 npm-debug.log
+
+# install these with volo
+lib/mimetypes
+lib/addressparser.js
+lib/mimefuncs.js
