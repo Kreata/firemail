@@ -4,15 +4,13 @@
 
 **firemail** is not entirely FirefoxOS specific. SMTP client requires TCPSocket support which is supported by FirefoxOS, for converting strings TextEncoder is needed and this is supported by FirefoxOS and Firefox. Other components probably run in every modern browser.
 
-See [example app](https://github.com/Kreata/firemail-example) for a complete example of sending a formatted mail with firemail.
-
-![firemail](http://tahvel.info/firemail2.png)
+See [example app](https://github.com/Kreata/firemail-example) for a complete example of sending a formatted mail with firemail from FirefoxOS.
 
 ## tl;dr - send an email using firemail
 
 ### Install with volo
 
-    volo add andris9/firemail
+    volo add andris9/firemail/v0.1.0
 
 ### Require firemail
 
