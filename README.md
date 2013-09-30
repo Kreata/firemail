@@ -64,7 +64,9 @@ Install and run the testserver (running on port 1025, so make sure this port is 
 
 ```bash
 git clone git@github.com:andris9/firemail.git
-cd firemail/test/smtpServer
+cd firemail
+volo install
+cd test/smtpServer
 npm install
 npm start
 ```
