@@ -10,7 +10,7 @@ See [example app](https://github.com/Kreata/firemail-example) for a complete exa
 
 ### Install with volo
 
-    volo add andris9/firemail/v0.1.0
+    volo add Kreata/firemail/v0.1.0
 
 ### Require firemail
 
