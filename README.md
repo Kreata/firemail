@@ -14,13 +14,15 @@ Dependencies for `firemail`:
 
 ## tl;dr - send an email using firemail
 
-### Install with volo
+### Volo
 
-    volo add Kreata/firemail/v0.1.0
+Install with [volo](http://volojs.org/):
 
-### Require firemail
+    volo add Kreata/firemail/v0.1.1
 
-    var firemail = require("firemail");
+### AMD
+
+Require [firemail.js](lib/firemail.js) as `firemail`
 
 ### Ensure privileges
 
