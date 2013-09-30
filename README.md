@@ -10,8 +10,7 @@ Dependencies for `firemail`:
   * [mimetypes](https://github.com/Kreata/mimetypes) - Convert extensions to Content-Type values and vice versa 
   * [addressparser](https://github.com/Kreata/addressparser) - Parse e-mail address lists
   * [mailcomposer](https://github.com/Kreata/mailcomposer) - Compose e-mails
-
-`firemail` includes a built in SMTP client which is used to deliver a RFC2822 message composed with the help of the beforementioned modules.
+  * [smtpclient](https://github.com/Kreata/smtpclient) - SMTP client for FirefoxOS
 
 ## tl;dr - send an email using firemail
 
@@ -62,7 +61,6 @@ Opening TCP sockets to a SMTP server requires special privileges. You need to se
 ## Documentation
 
   * [Firemail API](docs/firemail.md#api)
-  * [SMTP Client](docs/smtpClient.md)
 
 ## Tests
 

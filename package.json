@@ -7,6 +7,7 @@
       "addressparser": "github:Kreata/addressparser/v0.1.0",
       "mimefuncs": "github:Kreata/mimefuncs/v0.1.0",
       "mailcomposer": "github:Kreata/mailcomposer/v0.1.0",
+      "smtpclient": "github:Kreata/smtpclient/v0.1.0",
       "punycode": "github:bestiejs/punycode.js/v1.2.3"
     }
   }
