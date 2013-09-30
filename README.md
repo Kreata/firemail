@@ -1,10 +1,17 @@
-# E-mail components for FirefoxOS apps
+# Send E-mails from FirefoxOS
 
 **firemail** allows you to send e-mails from a FirefoxOS app with ease
 
-**firemail** is not entirely FirefoxOS specific. SMTP client requires TCPSocket support which is supported by FirefoxOS, for converting strings TextEncoder is needed and this is supported by FirefoxOS and Firefox. Other components probably run in every modern browser.
+See [example app](https://github.com/Kreata/firemail-example) for a complete example of sending a formatted mail with `firemail` from FirefoxOS.
 
-See [example app](https://github.com/Kreata/firemail-example) for a complete example of sending a formatted mail with firemail from FirefoxOS.
+Dependencies for `firemail`:
+
+  * [mimefuncs](https://github.com/Kreata/mimefuncs) - Encode and decode quoted printable and base64 strings
+  * [mimetypes](https://github.com/Kreata/mimetypes) - Convert extensions to Content-Type values and vice versa 
+  * [addressparser](https://github.com/Kreata/addressparser) - Parse e-mail address lists
+  * [mailcomposer](https://github.com/Kreata/mailcomposer) - Compose e-mails
+
+`firemail` includes a built in SMTP client which is used to deliver a RFC2822 message composed with the help of the beforementioned modules.
 
 ## tl;dr - send an email using firemail
 
@@ -52,7 +59,10 @@ Opening TCP sockets to a SMTP server requires special privileges. You need to se
         alert(err || success);
     });
 
-See all options for the firemail function [here](docs/firemail.md#api).
+## Documentation
+
+  * [Firemail API](docs/firemail.md#api)
+  * [SMTP Client](docs/smtpClient.md)
 
 ## Tests
 
