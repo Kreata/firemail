@@ -1,20 +1,20 @@
 [← Back to index](../README.md#index)
 
-# sendmail
+# firemail
 
-**sendmail** allows you to send rich formatted e-mails using your defined SMTP settings
+**firemail** allows you to send rich formatted e-mails using your defined SMTP settings
 
 ## Usage
 
 ### AMD
 
-Either require [firemail.js](../firemail.js) and use `firemail.sendmail` or require [sendmail.js](../lib/sendmail/sendmail.js) as `sendmail`
+Require [firemail.js](../firemail.js) as `firemail`
 
 ## API
 
-`sendmail` is a function
+`firemail` is a function
 
-    sendmail(mailData, callback)
+    firemail(mailData, callback)
 
   * **mailData** - object defining SMTP settings and the mail data
   * **callback** `(err, success)` - callback function which is run if an error occurs or the mail has been sent
@@ -51,11 +51,11 @@ Either require [firemail.js](../firemail.js) and use `firemail.sendmail` or requ
 
 ## Example
 
-The following example loads `sendmail` module and sends an e-mail.
+The following example loads `firemail` module and sends an e-mail.
 
-    require(["sendmail"], function(sendmail) {
+    require(["firemail"], function(firemail) {
 
-        sendmail({
+        firemail({
                 from: "Sender Name <sender@example.com>",
                 to: "Receiver Name <receiver@example.com>, another.receiver@example.com",
                 subject: "Test message with uncide characters ✓",

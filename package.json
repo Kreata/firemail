@@ -1,7 +1,6 @@
 {
-  "main": "firemail",
+  "main": "lib/firemail",
   "volo": {
-    "baseDir": "lib",
     "dependencies": {
       "mimetypes": "github:Kreata/mimetypes/v0.1.0",
       "addressparser": "github:Kreata/addressparser/v0.1.0",
