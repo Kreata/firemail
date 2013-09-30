@@ -60,7 +60,7 @@ See all options for the sendmail method [here](docs/sendmail.md#api).
 
 **Step 1**
 
-Install and run the testserver (running on port 1025, so make sure this port is available) with `npm`:
+Install firemail dependencies and run the testserver (running on port 1025, so make sure this port is available) with `npm`:
 
 ```bash
 git clone git@github.com:andris9/firemail.git
@@ -95,8 +95,6 @@ will be used instead.
   * [addressparser](https://github.com/Kreata/addressparser)
   * [mailComposer](docs/mailComposer.md)
   * [sendmail](docs/sendmail.md)
-
-Additionally `mailParser` object is exposed as well but this is in early alpha stage and the development has kind of stalled as other issues have arised that take my free time. If you are still interested in parsing e-mails, see [the testfile](test/mailParser/mailParser.js) for `mailParser`.
 
 ## License
 
